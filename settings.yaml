@@ -30,7 +30,7 @@ services:
 # Use reverse-proxy paths (e.g. /sonarr) or full URLs for external services.
 # Falls back to the internal services URL above if left empty.
 links:
-  plex: ""
+  plex: "https://app.plex.tv"
   overseerr: "https://requests.noahflix.net"
   tautulli: "/tautulli"
   radarr: "/radarr"

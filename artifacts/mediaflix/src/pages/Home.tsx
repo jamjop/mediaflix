@@ -26,8 +26,8 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#E5A00D" />
-        {/* Plex chevron arrow */}
-        <path d="M10 9L28 20L10 31L10 25L20 20L10 15Z" fill="white" />
+        {/* Clean centered play triangle */}
+        <path d="M14 11L14 29L30 20Z" fill="white" />
       </svg>
     ),
   },
@@ -37,25 +37,17 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     defaultPort: "5055",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
-        <rect width="40" height="40" rx="8" fill="#7C3AED" />
-        {/* Film strip body */}
-        <rect x="6" y="11" width="28" height="18" rx="2" fill="white" />
-        {/* Left sprocket strip */}
-        <rect x="6" y="11" width="6" height="18" fill="#5B21B6" />
-        {/* Right sprocket strip */}
-        <rect x="28" y="11" width="6" height="18" fill="#5B21B6" />
-        {/* Sprocket holes — left */}
-        <rect x="8" y="14" width="2" height="3" rx="0.5" fill="white" />
-        <rect x="8" y="19" width="2" height="3" rx="0.5" fill="white" />
-        <rect x="8" y="24" width="2" height="3" rx="0.5" fill="white" />
-        {/* Sprocket holes — right */}
-        <rect x="30" y="14" width="2" height="3" rx="0.5" fill="white" />
-        <rect x="30" y="19" width="2" height="3" rx="0.5" fill="white" />
-        <rect x="30" y="24" width="2" height="3" rx="0.5" fill="white" />
-        {/* Frame window */}
-        <rect x="14" y="14" width="12" height="12" rx="1" fill="#7C3AED" />
-        {/* Play triangle inside frame */}
-        <path d="M17.5 17.5L17.5 22.5L22.5 20Z" fill="white" />
+        <rect width="40" height="40" rx="8" fill="#6D28D9" />
+        {/* Clapperboard top bar */}
+        <rect x="8" y="9" width="24" height="7" rx="2" fill="white" />
+        {/* Clapper stripes */}
+        <path d="M13 9L10 16M18 9L15 16M23 9L20 16M28 9L25 16" stroke="#6D28D9" strokeWidth="2" strokeLinecap="round" />
+        {/* Clapperboard body */}
+        <rect x="8" y="18" width="24" height="14" rx="2" fill="white" />
+        {/* Body lines */}
+        <rect x="11" y="21" width="18" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
+        <rect x="11" y="25" width="13" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
+        <rect x="11" y="29" width="16" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
       </svg>
     ),
   },
@@ -66,9 +58,10 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#0D9488" />
-        <rect x="8" y="24" width="5" height="8" rx="1" fill="white" />
-        <rect x="17" y="18" width="5" height="14" rx="1" fill="white" />
-        <rect x="26" y="10" width="5" height="22" rx="1" fill="white" />
+        {/* Three rising bars */}
+        <rect x="8" y="25" width="6" height="8" rx="1.5" fill="white" />
+        <rect x="17" y="18" width="6" height="15" rx="1.5" fill="white" />
+        <rect x="26" y="10" width="6" height="23" rx="1.5" fill="white" />
       </svg>
     ),
   },
@@ -79,19 +72,18 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#F59E0B" />
-        {/* Radar scope: crosshairs */}
-        <line x1="20" y1="8" x2="20" y2="32" stroke="white" strokeWidth="0.8" strokeOpacity="0.35" />
-        <line x1="8" y1="20" x2="32" y2="20" stroke="white" strokeWidth="0.8" strokeOpacity="0.35" />
-        {/* Concentric rings */}
-        <circle cx="20" cy="20" r="11" stroke="white" strokeWidth="1.2" strokeOpacity="0.4" fill="none" />
-        <circle cx="20" cy="20" r="7" stroke="white" strokeWidth="1.2" strokeOpacity="0.6" fill="none" />
-        <circle cx="20" cy="20" r="3.5" stroke="white" strokeWidth="1.2" strokeOpacity="0.8" fill="none" />
+        {/* Outer ring */}
+        <circle cx="20" cy="21" r="12" stroke="white" strokeWidth="1.5" strokeOpacity="0.35" fill="none" />
+        {/* Middle ring */}
+        <circle cx="20" cy="21" r="7.5" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" fill="none" />
+        {/* Inner ring */}
+        <circle cx="20" cy="21" r="3" stroke="white" strokeWidth="1.5" strokeOpacity="0.9" fill="none" />
         {/* Sweep line */}
-        <line x1="20" y1="20" x2="30" y2="10" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-        {/* Blip */}
-        <circle cx="27" cy="13" r="1.8" fill="white" />
+        <line x1="20" y1="21" x2="29" y2="11" stroke="white" strokeWidth="2" strokeLinecap="round" />
+        {/* Blip dot */}
+        <circle cx="26.5" cy="13.5" r="2" fill="white" />
         {/* Center dot */}
-        <circle cx="20" cy="20" r="2" fill="white" />
+        <circle cx="20" cy="21" r="1.8" fill="white" />
       </svg>
     ),
   },
@@ -101,17 +93,17 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     defaultPort: "8989",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
-        <rect width="40" height="40" rx="8" fill="#3B82F6" />
+        <rect width="40" height="40" rx="8" fill="#2563EB" />
         {/* TV body */}
-        <rect x="7" y="14" width="26" height="18" rx="3" fill="white" />
-        {/* TV screen (blue cutout) */}
-        <rect x="10" y="17" width="20" height="12" rx="1.5" fill="#3B82F6" />
+        <rect x="6" y="13" width="28" height="19" rx="3" fill="white" />
+        {/* TV screen */}
+        <rect x="9.5" y="16.5" width="21" height="12" rx="1.5" fill="#2563EB" />
         {/* Antenna left */}
-        <line x1="15" y1="14" x2="11" y2="7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+        <line x1="15" y1="13" x2="11" y2="6" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
         {/* Antenna right */}
-        <line x1="25" y1="14" x2="29" y2="7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
-        {/* Stand base */}
-        <rect x="16" y="32" width="8" height="2.5" rx="1" fill="white" />
+        <line x1="25" y1="13" x2="29" y2="6" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        {/* Stand */}
+        <rect x="17" y="32" width="6" height="2.5" rx="1" fill="white" />
         <rect x="13" y="34.5" width="14" height="2" rx="1" fill="white" />
       </svg>
     ),
@@ -124,11 +116,11 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#22C55E" />
         {/* Arrow shaft */}
-        <rect x="18" y="9" width="4" height="14" rx="2" fill="white" />
+        <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
         {/* Arrow head */}
-        <path d="M12 23L20 31L28 23Z" fill="white" />
+        <path d="M11 22L20 32L29 22Z" fill="white" />
         {/* Tray */}
-        <rect x="10" y="32" width="20" height="3.5" rx="1.75" fill="white" />
+        <rect x="10" y="33" width="20" height="3" rx="1.5" fill="white" />
       </svg>
     ),
   },
@@ -138,9 +130,13 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     defaultPort: "8080",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
-        <rect width="40" height="40" rx="8" fill="#2563EB" />
-        <path d="M20 11V22M20 22L15 17M20 22L25 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M12 27H28" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        <rect width="40" height="40" rx="8" fill="#1D4ED8" />
+        {/* Shaft */}
+        <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
+        {/* Arrow head */}
+        <path d="M11 21L20 31L29 21Z" fill="white" />
+        {/* Tray line */}
+        <rect x="10" y="33" width="20" height="3" rx="1.5" fill="white" />
       </svg>
     ),
   },
