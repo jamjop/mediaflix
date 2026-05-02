@@ -7,7 +7,7 @@ import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-const SETTINGS_PATH = join(process.cwd(), "settings.yaml");
+const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 
 function loadSettings() {
   try {

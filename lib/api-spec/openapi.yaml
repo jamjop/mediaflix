@@ -12,6 +12,8 @@ tags:
     description: Health operations
   - name: config
     description: Site configuration
+  - name: activity
+    description: Live streaming activity
 paths:
   /healthz:
     get:
@@ -39,6 +41,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SiteConfig"
+  /activity:
+    get:
+      operationId: getActivity
+      tags: [activity]
+      summary: Get live streaming activity
+      description: Proxies Tautulli activity data server-side. Returns empty sessions if Tautulli is not configured.
+      responses:
+        "200":
+          description: Current streaming sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityData"
 components:
   schemas:
     HealthStatus:
@@ -115,3 +130,52 @@ components:
         - branding
         - services
         - access
+    StreamSession:
+      type: object
+      properties:
+        user:
+          type: string
+        title:
+          type: string
+        parent_title:
+          type: string
+        grandparent_title:
+          type: string
+        media_type:
+          type: string
+        progress_percent:
+          type: string
+        state:
+          type: string
+        player:
+          type: string
+        duration:
+          type: integer
+        view_offset:
+          type: integer
+      required:
+        - user
+        - title
+        - parent_title
+        - grandparent_title
+        - media_type
+        - progress_percent
+        - state
+        - player
+        - duration
+        - view_offset
+    ActivityData:
+      type: object
+      properties:
+        stream_count:
+          type: integer
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/StreamSession"
+        configured:
+          type: boolean
+      required:
+        - stream_count
+        - sessions
+        - configured

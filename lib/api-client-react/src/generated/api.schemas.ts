@@ -37,3 +37,22 @@ export interface SiteConfig {
   services: SiteServices;
   access: SiteAccess;
 }
+
+export interface StreamSession {
+  user: string;
+  title: string;
+  parent_title: string;
+  grandparent_title: string;
+  media_type: string;
+  progress_percent: string;
+  state: string;
+  player: string;
+  duration: number;
+  view_offset: number;
+}
+
+export interface ActivityData {
+  stream_count: number;
+  sessions: StreamSession[];
+  configured: boolean;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetConfig } from "@workspace/api-client-react";
+import { useGetConfig, useGetActivity } from "@workspace/api-client-react";
 
 const MOVIE_POSTERS = [
   "https://image.tmdb.org/t/p/w780/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
@@ -143,6 +143,7 @@ export default function Home() {
   const [fading, setFading] = useState(false);
 
   const { data: config, isLoading } = useGetConfig();
+  const { data: activity } = useGetActivity({ query: { refetchInterval: 30_000 } });
 
   useEffect(() => {
     if (config?.branding?.name) {
@@ -320,31 +321,7 @@ export default function Home() {
           <h2 className="text-center text-2xl font-semibold text-white/90 mb-8 tracking-wide">Live Dashboard</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Now Watching */}
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-white/90 font-semibold text-sm">Now Watching</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-white/40 text-xs">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                  0 active streams
-                </div>
-              </div>
-              <div className="h-24 flex flex-col items-center justify-center gap-2">
-                <p className="text-white/30 text-sm">Nothing streaming right now.</p>
-                {tautulliUrl && (
-                  <a href={tautulliUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors">
-                    Open Tautulli →
-                  </a>
-                )}
-              </div>
-            </div>
+            <NowWatchingCard activity={activity} tautulliUrl={tautulliUrl} />
 
             {/* Downloads */}
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
@@ -418,6 +395,129 @@ export default function Home() {
           <p>{siteName} · Your Personal Media Universe</p>
         </footer>
       </div>
+    </div>
+  );
+}
+
+type StreamSession = {
+  user: string;
+  title: string;
+  parent_title: string;
+  grandparent_title: string;
+  media_type: string;
+  progress_percent: string;
+  state: string;
+  player: string;
+  duration: number;
+  view_offset: number;
+};
+
+type ActivityData = {
+  stream_count: number;
+  sessions: StreamSession[];
+  configured: boolean;
+};
+
+function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; tautulliUrl: string }) {
+  const sessions = activity?.sessions ?? [];
+  const streamCount = activity?.stream_count ?? 0;
+  const configured = activity?.configured ?? false;
+
+  const tickerItems = sessions.map((s) => {
+    const displayTitle = s.grandparent_title ? `${s.grandparent_title} · ${s.title}` : s.title;
+    const stateIcon = s.state === "playing" ? "▶" : "⏸";
+    return `${s.user}  ${stateIcon}  ${displayTitle}  ·  ${s.progress_percent}%`;
+  });
+
+  const tickerText = tickerItems.join("          ");
+
+  return (
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${streamCount > 0 ? "bg-green-400 animate-pulse" : "bg-white/20"}`} />
+          <span className="text-white/90 font-semibold text-sm">Now Watching</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-white/40 text-xs">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          {streamCount} active stream{streamCount !== 1 ? "s" : ""}
+        </div>
+      </div>
+
+      {/* Scrolling ticker when streams are active */}
+      {streamCount > 0 && tickerText && (
+        <div className="mb-4 overflow-hidden rounded-lg bg-green-500/10 border border-green-500/20 py-2">
+          <div
+            className="flex whitespace-nowrap"
+            style={{ animation: "marquee 24s linear infinite" }}
+          >
+            <span className="text-green-300/80 text-xs px-4 flex-shrink-0">{tickerText}</span>
+            <span className="text-green-300/80 text-xs px-4 flex-shrink-0" aria-hidden>{tickerText}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Session list */}
+      {sessions.length > 0 ? (
+        <div className="space-y-3">
+          {sessions.map((s, i) => {
+            const displayTitle = s.grandparent_title ? s.grandparent_title : s.title;
+            const subtitle = s.grandparent_title ? s.title : s.player;
+            const progress = parseInt(s.progress_percent, 10) || 0;
+            const initials = s.user.slice(0, 2).toUpperCase();
+            const isPlaying = s.state === "playing";
+            return (
+              <div key={i} className="flex items-start gap-3">
+                {/* Avatar */}
+                <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-purple-300 text-xs font-bold">{initials}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-white/90 text-sm font-medium truncate">{displayTitle}</span>
+                    <span className={`text-xs px-1.5 py-0.5 rounded-md flex-shrink-0 font-medium ${isPlaying ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}`}>
+                      {isPlaying ? "▶ Playing" : "⏸ Paused"}
+                    </span>
+                  </div>
+                  {subtitle && (
+                    <p className="text-white/40 text-xs mb-2 truncate">{subtitle}</p>
+                  )}
+                  {/* Progress bar */}
+                  <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-700"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <p className="text-white/30 text-xs mt-1">{progress}% · {s.player}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="h-24 flex flex-col items-center justify-center gap-2">
+          {!configured ? (
+            <>
+              <p className="text-white/30 text-sm">Configure Tautulli to see live streams.</p>
+              <p className="text-white/20 text-xs">Add tautulli URL + API key to settings.yaml</p>
+            </>
+          ) : (
+            <p className="text-white/30 text-sm">Nothing streaming right now.</p>
+          )}
+          {tautulliUrl && (
+            <a href={tautulliUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors">
+              Open Tautulli →
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }

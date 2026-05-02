@@ -41,3 +41,26 @@ export const GetConfigResponse = zod.object({
     access_label: zod.string(),
   }),
 });
+
+/**
+ * Proxies Tautulli activity data server-side. Returns empty sessions if Tautulli is not configured.
+ * @summary Get live streaming activity
+ */
+export const GetActivityResponse = zod.object({
+  stream_count: zod.number(),
+  sessions: zod.array(
+    zod.object({
+      user: zod.string(),
+      title: zod.string(),
+      parent_title: zod.string(),
+      grandparent_title: zod.string(),
+      media_type: zod.string(),
+      progress_percent: zod.string(),
+      state: zod.string(),
+      player: zod.string(),
+      duration: zod.number(),
+      view_offset: zod.number(),
+    }),
+  ),
+  configured: zod.boolean(),
+});

@@ -13,7 +13,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus, SiteConfig } from "./api.schemas";
+import type { ActivityData, HealthStatus, SiteConfig } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
@@ -158,6 +158,82 @@ export function useGetConfig<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetConfigQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Proxies Tautulli activity data server-side. Returns empty sessions if Tautulli is not configured.
+ * @summary Get live streaming activity
+ */
+export const getGetActivityUrl = () => {
+  return `/api/activity`;
+};
+
+export const getActivity = async (
+  options?: RequestInit,
+): Promise<ActivityData> => {
+  return customFetch<ActivityData>(getGetActivityUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetActivityQueryKey = () => {
+  return [`/api/activity`] as const;
+};
+
+export const getGetActivityQueryOptions = <
+  TData = Awaited<ReturnType<typeof getActivity>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getActivity>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetActivityQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getActivity>>> = ({
+    signal,
+  }) => getActivity({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getActivity>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetActivityQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getActivity>>
+>;
+export type GetActivityQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get live streaming activity
+ */
+
+export function useGetActivity<
+  TData = Awaited<ReturnType<typeof getActivity>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getActivity>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetActivityQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
