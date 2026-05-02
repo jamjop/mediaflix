@@ -341,9 +341,9 @@ export default function Home() {
         )}
 
         {/* Live Dashboard */}
-        <section className="max-w-4xl mx-auto px-6 pb-20">
-          <h2 className="text-center text-2xl font-semibold text-white/90 mb-8 tracking-wide">Live Dashboard</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <section className="max-w-4xl mx-auto px-4 py-8">
+          <h2 className="text-center text-2xl font-bold text-white/90 mb-6">Live Dashboard</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Now Watching */}
             <NowWatchingCard activity={activity} tautulliUrl={tautulliUrl} />
 
@@ -526,14 +526,9 @@ function RecentRequestsCard({
 
       {/* Content */}
       {!configured ? (
-        <div className="h-32 flex flex-col items-center justify-center gap-2">
-          <p className="text-white/30 text-sm">Configure Overseerr to see recent requests.</p>
-          <p className="text-white/20 text-xs">Add overseerr URL + API key to settings.yaml</p>
-        </div>
+        <p className="text-center text-sm text-white/30 py-10">Configure Overseerr to see recent requests.</p>
       ) : requests.length === 0 ? (
-        <div className="h-32 flex items-center justify-center">
-          <p className="text-white/30 text-sm">No requests yet.</p>
-        </div>
+        <p className="text-center text-sm text-white/30 py-10">No requests yet.</p>
       ) : (
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
           {requests.map((req) => {
@@ -710,27 +705,22 @@ function DownloadsCard({
           )}
         </div>
       ) : (
-        <div className="h-24 flex flex-col items-center justify-center gap-2">
-          {!configured ? (
-            <>
-              <p className="text-white/30 text-sm">Configure SABnzbd to see live downloads.</p>
-              <p className="text-white/20 text-xs">Add sabnzbd URL + API key to settings.yaml</p>
-            </>
-          ) : (
-            <p className="text-white/30 text-sm">Queue is empty.</p>
+        <div className="py-10 text-center">
+          <p className="text-white/30 text-sm">{!configured ? "Configure SABnzbd to see live downloads." : "Queue is empty."}</p>
+          {(qbittorrentUrl || sabnzbdUrl) && (
+            <div className="flex items-center justify-center gap-3 mt-2">
+              {qbittorrentUrl && (
+                <a href={qbittorrentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
+                  qBittorrent →
+                </a>
+              )}
+              {sabnzbdUrl && (
+                <a href={sabnzbdUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
+                  SABnzbd →
+                </a>
+              )}
+            </div>
           )}
-          <div className="flex items-center gap-3 mt-1">
-            {qbittorrentUrl && (
-              <a href={qbittorrentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
-                qBittorrent →
-              </a>
-            )}
-            {sabnzbdUrl && (
-              <a href={sabnzbdUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
-                SABnzbd →
-              </a>
-            )}
-          </div>
         </div>
       )}
     </div>
@@ -821,17 +811,10 @@ function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; t
           })}
         </div>
       ) : (
-        <div className="h-24 flex flex-col items-center justify-center gap-2">
-          {!configured ? (
-            <>
-              <p className="text-white/30 text-sm">Configure Tautulli to see live streams.</p>
-              <p className="text-white/20 text-xs">Add tautulli URL + API key to settings.yaml</p>
-            </>
-          ) : (
-            <p className="text-white/30 text-sm">Nothing streaming right now.</p>
-          )}
+        <div className="py-10 text-center">
+          <p className="text-white/30 text-sm">{!configured ? "Configure Tautulli to see live streams." : "Nothing streaming right now."}</p>
           {tautulliUrl && (
-            <a href={tautulliUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors">
+            <a href={tautulliUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors mt-2 inline-block">
               Open Tautulli →
             </a>
           )}
