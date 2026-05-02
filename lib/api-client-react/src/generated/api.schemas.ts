@@ -29,6 +29,10 @@ export interface SiteLinks {
   qbittorrent: string;
 }
 
+export interface SiteBackground {
+  style: string;
+}
+
 export interface SiteBranding {
   name: string;
   tagline: string;
@@ -43,6 +47,7 @@ export interface SiteAccess {
 }
 
 export interface SiteConfig {
+  background: SiteBackground;
   branding: SiteBranding;
   services: SiteServices;
   links: SiteLinks;

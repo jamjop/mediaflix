@@ -16,6 +16,7 @@ export * from "./postersData";
 export * from "./requestsData";
 export * from "./serviceStatus";
 export * from "./siteAccess";
+export * from "./siteBackground";
 export * from "./siteBranding";
 export * from "./siteConfig";
 export * from "./siteLinks";

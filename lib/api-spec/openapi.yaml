@@ -171,6 +171,13 @@ components:
         - sonarr
         - sabnzbd
         - qbittorrent
+    SiteBackground:
+      type: object
+      properties:
+        style:
+          type: string
+      required:
+        - style
     SiteBranding:
       type: object
       properties:
@@ -203,6 +210,8 @@ components:
     SiteConfig:
       type: object
       properties:
+        background:
+          $ref: "#/components/schemas/SiteBackground"
         branding:
           $ref: "#/components/schemas/SiteBranding"
         services:
@@ -212,6 +221,7 @@ components:
         access:
           $ref: "#/components/schemas/SiteAccess"
       required:
+        - background
         - branding
         - services
         - links

@@ -20,6 +20,9 @@ export const HealthCheckResponse = zod.object({
  * @summary Get site configuration
  */
 export const GetConfigResponse = zod.object({
+  background: zod.object({
+    style: zod.string(),
+  }),
   branding: zod.object({
     name: zod.string(),
     tagline: zod.string(),

@@ -14,12 +14,16 @@ function loadSettings() {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
 
+    const background = (parsed.background as Record<string, string>) ?? {};
     const branding = (parsed.branding as Record<string, string>) ?? {};
     const services = (parsed.services as Record<string, string>) ?? {};
     const links = (parsed.links as Record<string, string>) ?? {};
     const access = (parsed.access as Record<string, string>) ?? {};
 
     return {
+      background: {
+        style: background.style === "gradient" ? "gradient" : "posters",
+      },
       branding: {
         name: branding.name ?? "mediaflix",
         tagline: branding.tagline ?? "Your personal media universe.",
@@ -54,6 +58,7 @@ function loadSettings() {
     logger.warn({ err, path: SETTINGS_PATH }, "Could not read settings.yaml, using defaults");
     const emptyServices = { plex: "", overseerr: "", tautulli: "", radarr: "", sonarr: "", sabnzbd: "", qbittorrent: "" };
     return {
+      background: { style: "posters" },
       branding: {
         name: "mediaflix",
         tagline: "Your personal media universe.",

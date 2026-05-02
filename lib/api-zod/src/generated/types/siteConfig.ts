@@ -6,11 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { SiteAccess } from "./siteAccess";
+import type { SiteBackground } from "./siteBackground";
 import type { SiteBranding } from "./siteBranding";
 import type { SiteLinks } from "./siteLinks";
 import type { SiteServices } from "./siteServices";
 
 export interface SiteConfig {
+  background: SiteBackground;
   branding: SiteBranding;
   services: SiteServices;
   links: SiteLinks;

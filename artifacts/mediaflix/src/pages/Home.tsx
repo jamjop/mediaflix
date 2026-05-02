@@ -170,10 +170,13 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const background = config?.background;
   const branding = config?.branding;
   const services = config?.services;
   const links = config?.links;
   const access = config?.access;
+
+  const useGradient = background?.style === "gradient";
 
   const siteName = branding?.name ?? "mediaflix";
   const gradientPart = siteName.slice(0, Math.ceil(siteName.length / 2));
@@ -193,22 +196,33 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden relative">
-      {/* Background poster mosaic */}
+      {/* Background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: fading ? 0 : 1 }}
-        >
-          <PosterGrid posterIndex={currentPoster} posters={moviePosters} />
-        </div>
-        <div
-          className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: fading ? 1 : 0 }}
-        >
-          <PosterGrid posterIndex={nextPoster} posters={moviePosters} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/80 via-[#0a0a0f]/70 to-[#0a0a0f]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]/60" />
+        {useGradient ? (
+          <>
+            <div className="absolute inset-0 bg-[#0a0a0f]" />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 120% 70% at 50% -10%, rgba(168,85,247,0.18) 0%, transparent 60%)" }} />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 60% at 80% 80%, rgba(236,72,153,0.08) 0%, transparent 55%)" }} />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 50% at 10% 60%, rgba(99,102,241,0.07) 0%, transparent 50%)" }} />
+          </>
+        ) : (
+          <>
+            <div
+              className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
+              style={{ opacity: fading ? 0 : 1 }}
+            >
+              <PosterGrid posterIndex={currentPoster} posters={moviePosters} />
+            </div>
+            <div
+              className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
+              style={{ opacity: fading ? 1 : 0 }}
+            >
+              <PosterGrid posterIndex={nextPoster} posters={moviePosters} />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/80 via-[#0a0a0f]/70 to-[#0a0a0f]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]/60" />
+          </>
+        )}
       </div>
 
       {/* Content */}
