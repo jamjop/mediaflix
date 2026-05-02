@@ -64,3 +64,28 @@ export const GetActivityResponse = zod.object({
   ),
   configured: zod.boolean(),
 });
+
+/**
+ * Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
+ * @summary Get live SABnzbd download queue
+ */
+export const GetDownloadsResponse = zod.object({
+  speed: zod.string(),
+  kbpersec: zod.string(),
+  mb: zod.string(),
+  mbleft: zod.string(),
+  diskspace1: zod.string(),
+  noofslots: zod.number(),
+  slots: zod.array(
+    zod.object({
+      filename: zod.string(),
+      percentage: zod.string(),
+      size: zod.string(),
+      sizeleft: zod.string(),
+      status: zod.string(),
+      timeleft: zod.string(),
+      cat: zod.string(),
+    }),
+  ),
+  configured: zod.boolean(),
+});

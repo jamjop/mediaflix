@@ -13,7 +13,12 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { ActivityData, HealthStatus, SiteConfig } from "./api.schemas";
+import type {
+  ActivityData,
+  DownloadsData,
+  HealthStatus,
+  SiteConfig,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
@@ -234,6 +239,82 @@ export function useGetActivity<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetActivityQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
+ * @summary Get live SABnzbd download queue
+ */
+export const getGetDownloadsUrl = () => {
+  return `/api/downloads`;
+};
+
+export const getDownloads = async (
+  options?: RequestInit,
+): Promise<DownloadsData> => {
+  return customFetch<DownloadsData>(getGetDownloadsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetDownloadsQueryKey = () => {
+  return [`/api/downloads`] as const;
+};
+
+export const getGetDownloadsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDownloads>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDownloads>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDownloadsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDownloads>>> = ({
+    signal,
+  }) => getDownloads({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDownloads>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDownloadsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDownloads>>
+>;
+export type GetDownloadsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get live SABnzbd download queue
+ */
+
+export function useGetDownloads<
+  TData = Awaited<ReturnType<typeof getDownloads>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDownloads>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDownloadsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

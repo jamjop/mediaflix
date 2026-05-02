@@ -56,3 +56,24 @@ export interface ActivityData {
   sessions: StreamSession[];
   configured: boolean;
 }
+
+export interface DownloadSlot {
+  filename: string;
+  percentage: string;
+  size: string;
+  sizeleft: string;
+  status: string;
+  timeleft: string;
+  cat: string;
+}
+
+export interface DownloadsData {
+  speed: string;
+  kbpersec: string;
+  mb: string;
+  mbleft: string;
+  diskspace1: string;
+  noofslots: number;
+  slots: DownloadSlot[];
+  configured: boolean;
+}

@@ -7,6 +7,8 @@
  */
 
 export * from "./activityData";
+export * from "./downloadsData";
+export * from "./downloadSlot";
 export * from "./healthStatus";
 export * from "./siteAccess";
 export * from "./siteBranding";

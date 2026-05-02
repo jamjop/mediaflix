@@ -26,6 +26,11 @@ services:
 tautulli:
   api_key: ""      # Found in Tautulli → Settings → Web Interface → API Key
 
+# SABnzbd integration — used to show live download queue data.
+# The API key is kept server-side and never exposed to the browser.
+sabnzbd:
+  api_key: ""      # Found in SABnzbd → Config → General → API Key
+
 # Access buttons shown in the hero section
 access:
   # "Request Media" button — typically points to Overseerr

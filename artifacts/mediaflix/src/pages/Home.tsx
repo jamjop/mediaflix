@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetConfig, useGetActivity } from "@workspace/api-client-react";
+import { useGetConfig, useGetActivity, useGetDownloads } from "@workspace/api-client-react";
 
 const MOVIE_POSTERS = [
   "https://image.tmdb.org/t/p/w780/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
@@ -144,6 +144,7 @@ export default function Home() {
 
   const { data: config, isLoading } = useGetConfig();
   const { data: activity } = useGetActivity({ query: { refetchInterval: 30_000 } });
+  const { data: downloads } = useGetDownloads({ query: { refetchInterval: 30_000 } });
 
   useEffect(() => {
     if (config?.branding?.name) {
@@ -324,46 +325,7 @@ export default function Home() {
             <NowWatchingCard activity={activity} tautulliUrl={tautulliUrl} />
 
             {/* Downloads */}
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-400" />
-                  <span className="text-white/90 font-semibold text-sm">Downloads</span>
-                </div>
-                <div className="flex items-center gap-3 text-white/40 text-xs">
-                  <span className="flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                      <polyline points="17 6 23 6 23 12" />
-                    </svg>
-                    0 KB/s
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                      <line x1="8" y1="21" x2="16" y2="21" />
-                      <line x1="12" y1="17" x2="12" y2="21" />
-                    </svg>
-                    4903.9 GB free
-                  </span>
-                </div>
-              </div>
-              <div className="h-24 flex flex-col items-center justify-center gap-2">
-                <p className="text-white/30 text-sm">Queue is empty.</p>
-                <div className="flex items-center gap-3">
-                  {qbittorrentUrl && (
-                    <a href={qbittorrentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
-                      qBittorrent →
-                    </a>
-                  )}
-                  {sabnzbdUrl && (
-                    <a href={sabnzbdUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
-                      SABnzbd →
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
+            <DownloadsCard downloads={downloads} sabnzbdUrl={sabnzbdUrl} qbittorrentUrl={qbittorrentUrl} />
 
             {/* Recent Additions */}
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6 sm:col-span-2">
@@ -417,6 +379,139 @@ type ActivityData = {
   sessions: StreamSession[];
   configured: boolean;
 };
+
+type DownloadSlot = {
+  filename: string;
+  percentage: string;
+  size: string;
+  sizeleft: string;
+  status: string;
+  timeleft: string;
+  cat: string;
+};
+
+type DownloadsData = {
+  speed: string;
+  kbpersec: string;
+  mb: string;
+  mbleft: string;
+  diskspace1: string;
+  noofslots: number;
+  slots: DownloadSlot[];
+  configured: boolean;
+};
+
+function DownloadsCard({
+  downloads,
+  sabnzbdUrl,
+  qbittorrentUrl,
+}: {
+  downloads?: DownloadsData;
+  sabnzbdUrl: string;
+  qbittorrentUrl: string;
+}) {
+  const slots = downloads?.slots ?? [];
+  const configured = downloads?.configured ?? false;
+  const speed = downloads?.speed ?? "0";
+  const kbpersec = parseFloat(downloads?.kbpersec ?? "0");
+  const diskspace1 = parseFloat(downloads?.diskspace1 ?? "0");
+  const isDownloading = kbpersec > 0;
+  const diskGB = diskspace1 > 0 ? diskspace1.toFixed(1) : null;
+  const speedDisplay = speed && speed !== "0" ? `${speed}B/s` : "0 B/s";
+
+  return (
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${isDownloading ? "bg-blue-400 animate-pulse" : "bg-white/20"}`} />
+          <span className="text-white/90 font-semibold text-sm">Downloads</span>
+        </div>
+        <div className="flex items-center gap-3 text-white/40 text-xs">
+          {configured && (
+            <>
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  <polyline points="17 6 23 6 23 12" />
+                </svg>
+                {speedDisplay}
+              </span>
+              {diskGB && (
+                <span className="flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                  </svg>
+                  {diskGB} GB free
+                </span>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Slot list */}
+      {slots.length > 0 ? (
+        <div className="space-y-3">
+          {slots.slice(0, 4).map((slot, i) => {
+            const pct = parseFloat(slot.percentage) || 0;
+            const isActive = slot.status === "Downloading";
+            return (
+              <div key={i}>
+                <div className="flex items-center justify-between mb-1 gap-2">
+                  <span className="text-white/80 text-xs font-medium truncate">{slot.filename}</span>
+                  <span className={`text-xs px-1.5 py-0.5 rounded-md flex-shrink-0 font-medium ${
+                    isActive ? "bg-blue-500/20 text-blue-400" : "bg-yellow-500/20 text-yellow-400"
+                  }`}>
+                    {slot.status}
+                  </span>
+                </div>
+                <div className="h-1 bg-white/10 rounded-full overflow-hidden mb-1">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-700"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-white/30 text-xs">
+                  <span>{pct.toFixed(0)}% · {slot.sizeleft} remaining</span>
+                  <span>{slot.timeleft}</span>
+                </div>
+              </div>
+            );
+          })}
+          {slots.length > 4 && (
+            <p className="text-white/30 text-xs text-center pt-1">+{slots.length - 4} more in queue</p>
+          )}
+        </div>
+      ) : (
+        <div className="h-24 flex flex-col items-center justify-center gap-2">
+          {!configured ? (
+            <>
+              <p className="text-white/30 text-sm">Configure SABnzbd to see live downloads.</p>
+              <p className="text-white/20 text-xs">Add sabnzbd URL + API key to settings.yaml</p>
+            </>
+          ) : (
+            <p className="text-white/30 text-sm">Queue is empty.</p>
+          )}
+          <div className="flex items-center gap-3 mt-1">
+            {qbittorrentUrl && (
+              <a href={qbittorrentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
+                qBittorrent →
+              </a>
+            )}
+            {sabnzbdUrl && (
+              <a href={sabnzbdUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
+                SABnzbd →
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; tautulliUrl: string }) {
   const sessions = activity?.sessions ?? [];

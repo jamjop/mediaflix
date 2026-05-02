@@ -14,6 +14,8 @@ tags:
     description: Site configuration
   - name: activity
     description: Live streaming activity
+  - name: downloads
+    description: Live download queue
 paths:
   /healthz:
     get:
@@ -54,6 +56,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivityData"
+  /downloads:
+    get:
+      operationId: getDownloads
+      tags: [downloads]
+      summary: Get live SABnzbd download queue
+      description: Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
+      responses:
+        "200":
+          description: Current download queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadsData"
 components:
   schemas:
     HealthStatus:
@@ -178,4 +193,59 @@ components:
       required:
         - stream_count
         - sessions
+        - configured
+    DownloadSlot:
+      type: object
+      properties:
+        filename:
+          type: string
+        percentage:
+          type: string
+        size:
+          type: string
+        sizeleft:
+          type: string
+        status:
+          type: string
+        timeleft:
+          type: string
+        cat:
+          type: string
+      required:
+        - filename
+        - percentage
+        - size
+        - sizeleft
+        - status
+        - timeleft
+        - cat
+    DownloadsData:
+      type: object
+      properties:
+        speed:
+          type: string
+        kbpersec:
+          type: string
+        mb:
+          type: string
+        mbleft:
+          type: string
+        diskspace1:
+          type: string
+        noofslots:
+          type: integer
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/DownloadSlot"
+        configured:
+          type: boolean
+      required:
+        - speed
+        - kbpersec
+        - mb
+        - mbleft
+        - diskspace1
+        - noofslots
+        - slots
         - configured
