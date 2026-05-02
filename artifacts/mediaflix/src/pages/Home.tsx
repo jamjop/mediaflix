@@ -24,7 +24,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Stream your media",
     defaultPort: "32400",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#E5A00D" />
         {/* Clean centered play triangle */}
         <path d="M14 11L14 29L30 20Z" fill="white" />
@@ -36,7 +36,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Request content",
     defaultPort: "5055",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#6D28D9" />
         {/* Clapperboard top bar */}
         <rect x="8" y="9" width="24" height="7" rx="2" fill="white" />
@@ -56,7 +56,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Watch statistics",
     defaultPort: "8181",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#0D9488" />
         {/* Three rising bars */}
         <rect x="8" y="25" width="6" height="8" rx="1.5" fill="white" />
@@ -70,7 +70,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Movie management",
     defaultPort: "7878",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#F59E0B" />
         {/* Outer ring */}
         <circle cx="20" cy="21" r="12" stroke="white" strokeWidth="1.5" strokeOpacity="0.35" fill="none" />
@@ -92,7 +92,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "TV show management",
     defaultPort: "8989",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#2563EB" />
         {/* TV body */}
         <rect x="6" y="13" width="28" height="19" rx="3" fill="white" />
@@ -113,7 +113,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Usenet downloads",
     defaultPort: "8080",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#22C55E" />
         {/* Arrow shaft */}
         <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
@@ -129,7 +129,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Torrent downloads",
     defaultPort: "8080",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
         <rect width="40" height="40" rx="8" fill="#1D4ED8" />
         {/* Shaft */}
         <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
@@ -306,7 +306,7 @@ export default function Home() {
         {(isLoading || activeServices.length > 0) && (
           <section className="max-w-4xl mx-auto px-6 pb-16">
             <h2 className="text-center text-2xl font-semibold text-white/90 mb-8 tracking-wide">Quick Access</h2>
-            <div className={`grid gap-4 ${activeServices.length <= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"}`}>
+            <div className={`grid gap-3 ${activeServices.length <= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"}`}>
               {isLoading
                 ? Array.from({ length: 7 }).map((_, i) => (
                     <div key={i} className="h-28 rounded-2xl bg-white/[0.04] border border-white/[0.05] animate-pulse" />
