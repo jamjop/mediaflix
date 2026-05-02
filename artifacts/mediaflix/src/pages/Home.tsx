@@ -239,9 +239,7 @@ export default function Home() {
       {/* Content */}
       <div className="relative z-10">
         {/* Nav */}
-        <nav className="flex items-center justify-between px-8 py-5">
-          <ServiceHealthBar health={serviceStatus} />
-        </nav>
+        <nav className="flex items-center justify-between px-8 py-5" />
 
         {/* Hero */}
         <section className="flex flex-col items-center text-center px-6 pt-12 pb-16">
@@ -358,6 +356,11 @@ export default function Home() {
 
             {/* Recent Requests */}
             <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
+
+            {/* Service Health */}
+            <div className="flex justify-center">
+              <ServiceHealthBar health={serviceStatus} />
+            </div>
           </div>
         </section>
 
@@ -432,7 +435,7 @@ function ServiceHealthBar({ health }: { health?: HealthCheckData }) {
 
       {/* Hover panel */}
       {open && (
-        <div className="absolute top-8 right-0 min-w-[200px] bg-black/90 border border-white/10 rounded-xl p-3 z-50 backdrop-blur-md shadow-2xl">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 min-w-[200px] bg-black/90 border border-white/10 rounded-xl p-3 z-50 backdrop-blur-md shadow-2xl">
           <p className="text-white/40 text-[10px] font-semibold uppercase tracking-widest mb-2.5">
             Services
           </p>
