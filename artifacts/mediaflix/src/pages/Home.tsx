@@ -240,10 +240,6 @@ export default function Home() {
       <div className="relative z-10">
         {/* Nav */}
         <nav className="flex items-center justify-between px-8 py-5">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-            <span className="text-sm text-white/60 font-medium tracking-wide">Media Command Center</span>
-          </div>
           <ServiceHealthBar health={serviceStatus} />
         </nav>
 
