@@ -135,9 +135,7 @@ export default function Home() {
   const gradientPart = siteName.slice(0, Math.ceil(siteName.length / 2));
   const plainPart = siteName.slice(Math.ceil(siteName.length / 2));
 
-  const activeServices = SERVICE_ORDER.filter(
-    (key) => services && services[key] && services[key].trim() !== ""
-  );
+  const activeServices = SERVICE_ORDER;
 
   const requestUrl = access?.request_url?.trim() ?? "";
   const requestLabel = access?.request_label ?? "Request Media";
@@ -258,14 +256,14 @@ export default function Home() {
                   ))
                 : activeServices.map((key) => {
                     const meta = SERVICE_META[key];
-                    const url = services![key];
+                    const url = services?.[key]?.trim() ?? "";
+                    const hasUrl = url !== "";
+                    const Tag = hasUrl ? "a" : "div";
                     return (
-                      <a
+                      <Tag
                         key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.10] bg-white/[0.06] hover:bg-white/[0.10] hover:border-white/[0.18] transition-all duration-200 group"
+                        {...(hasUrl ? { href: url, target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/[0.15] transition-all duration-200 group cursor-pointer"
                       >
                         <div className="transition-transform duration-200 group-hover:scale-110">
                           {meta.icon}
@@ -274,7 +272,7 @@ export default function Home() {
                           <div className="text-white font-medium text-sm">{meta.name}</div>
                           <div className="text-white/50 text-xs mt-0.5">{meta.description}</div>
                         </div>
-                      </a>
+                      </Tag>
                     );
                   })}
             </div>
