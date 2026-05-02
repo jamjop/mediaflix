@@ -356,11 +356,11 @@ export default function Home() {
 
             {/* Recent Requests */}
             <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
+          </div>
 
-            {/* Service Health */}
-            <div className="flex justify-center">
-              <ServiceHealthBar health={serviceStatus} />
-            </div>
+          {/* Service Health */}
+          <div className="flex justify-center mt-6">
+            <ServiceHealthBar health={serviceStatus} />
           </div>
         </section>
 
