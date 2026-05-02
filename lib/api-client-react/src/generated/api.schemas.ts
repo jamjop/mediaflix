@@ -57,6 +57,21 @@ export interface ActivityData {
   configured: boolean;
 }
 
+export interface MediaRequest {
+  id: number;
+  title: string;
+  poster_path: string;
+  media_type: string;
+  request_status: number;
+  media_status: number;
+  requested_by: string;
+}
+
+export interface RequestsData {
+  requests: MediaRequest[];
+  configured: boolean;
+}
+
 export interface DownloadSlot {
   filename: string;
   percentage: string;

@@ -66,6 +66,25 @@ export const GetActivityResponse = zod.object({
 });
 
 /**
+ * Proxies Overseerr request data server-side. Returns recent requests with title, poster, and status.
+ * @summary Get recent Overseerr media requests
+ */
+export const GetRequestsResponse = zod.object({
+  requests: zod.array(
+    zod.object({
+      id: zod.number(),
+      title: zod.string(),
+      poster_path: zod.string(),
+      media_type: zod.string(),
+      request_status: zod.number(),
+      media_status: zod.number(),
+      requested_by: zod.string(),
+    }),
+  ),
+  configured: zod.boolean(),
+});
+
+/**
  * Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
  * @summary Get live SABnzbd download queue
  */

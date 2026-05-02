@@ -17,6 +17,7 @@ import type {
   ActivityData,
   DownloadsData,
   HealthStatus,
+  RequestsData,
   SiteConfig,
 } from "./api.schemas";
 
@@ -239,6 +240,82 @@ export function useGetActivity<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetActivityQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Proxies Overseerr request data server-side. Returns recent requests with title, poster, and status.
+ * @summary Get recent Overseerr media requests
+ */
+export const getGetRequestsUrl = () => {
+  return `/api/requests`;
+};
+
+export const getRequests = async (
+  options?: RequestInit,
+): Promise<RequestsData> => {
+  return customFetch<RequestsData>(getGetRequestsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetRequestsQueryKey = () => {
+  return [`/api/requests`] as const;
+};
+
+export const getGetRequestsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRequests>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRequests>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRequestsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRequests>>> = ({
+    signal,
+  }) => getRequests({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRequests>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRequestsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRequests>>
+>;
+export type GetRequestsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get recent Overseerr media requests
+ */
+
+export function useGetRequests<
+  TData = Awaited<ReturnType<typeof getRequests>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRequests>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetRequestsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

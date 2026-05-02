@@ -10,6 +10,8 @@ export * from "./activityData";
 export * from "./downloadsData";
 export * from "./downloadSlot";
 export * from "./healthStatus";
+export * from "./mediaRequest";
+export * from "./requestsData";
 export * from "./siteAccess";
 export * from "./siteBranding";
 export * from "./siteConfig";

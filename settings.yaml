@@ -26,6 +26,11 @@ services:
 tautulli:
   api_key: ""      # Found in Tautulli → Settings → Web Interface → API Key
 
+# Overseerr/Jellyseerr integration — used to show recent media requests.
+# The API key is kept server-side and never exposed to the browser.
+overseerr:
+  api_key: ""      # Found in Overseerr → Settings → General → API Key
+
 # SABnzbd integration — used to show live download queue data.
 # The API key is kept server-side and never exposed to the browser.
 sabnzbd:

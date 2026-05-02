@@ -14,6 +14,8 @@ tags:
     description: Site configuration
   - name: activity
     description: Live streaming activity
+  - name: requests
+    description: Overseerr media requests
   - name: downloads
     description: Live download queue
 paths:
@@ -56,6 +58,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivityData"
+  /requests:
+    get:
+      operationId: getRequests
+      tags: [requests]
+      summary: Get recent Overseerr media requests
+      description: Proxies Overseerr request data server-side. Returns recent requests with title, poster, and status.
+      responses:
+        "200":
+          description: Recent media requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestsData"
   /downloads:
     get:
       operationId: getDownloads
@@ -193,6 +208,43 @@ components:
       required:
         - stream_count
         - sessions
+        - configured
+    MediaRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        poster_path:
+          type: string
+        media_type:
+          type: string
+        request_status:
+          type: integer
+        media_status:
+          type: integer
+        requested_by:
+          type: string
+      required:
+        - id
+        - title
+        - poster_path
+        - media_type
+        - request_status
+        - media_status
+        - requested_by
+    RequestsData:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaRequest"
+        configured:
+          type: boolean
+      required:
+        - requests
         - configured
     DownloadSlot:
       type: object
