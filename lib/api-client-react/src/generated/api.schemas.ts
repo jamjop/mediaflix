@@ -19,6 +19,16 @@ export interface SiteServices {
   qbittorrent: string;
 }
 
+export interface SiteLinks {
+  plex: string;
+  overseerr: string;
+  tautulli: string;
+  radarr: string;
+  sonarr: string;
+  sabnzbd: string;
+  qbittorrent: string;
+}
+
 export interface SiteBranding {
   name: string;
   tagline: string;
@@ -35,6 +45,7 @@ export interface SiteAccess {
 export interface SiteConfig {
   branding: SiteBranding;
   services: SiteServices;
+  links: SiteLinks;
   access: SiteAccess;
 }
 

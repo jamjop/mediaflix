@@ -7,10 +7,12 @@
  */
 import type { SiteAccess } from "./siteAccess";
 import type { SiteBranding } from "./siteBranding";
+import type { SiteLinks } from "./siteLinks";
 import type { SiteServices } from "./siteServices";
 
 export interface SiteConfig {
   branding: SiteBranding;
   services: SiteServices;
+  links: SiteLinks;
   access: SiteAccess;
 }

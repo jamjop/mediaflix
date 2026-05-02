@@ -133,6 +133,31 @@ components:
         - sonarr
         - sabnzbd
         - qbittorrent
+    SiteLinks:
+      type: object
+      properties:
+        plex:
+          type: string
+        overseerr:
+          type: string
+        tautulli:
+          type: string
+        radarr:
+          type: string
+        sonarr:
+          type: string
+        sabnzbd:
+          type: string
+        qbittorrent:
+          type: string
+      required:
+        - plex
+        - overseerr
+        - tautulli
+        - radarr
+        - sonarr
+        - sabnzbd
+        - qbittorrent
     SiteBranding:
       type: object
       properties:
@@ -169,11 +194,14 @@ components:
           $ref: "#/components/schemas/SiteBranding"
         services:
           $ref: "#/components/schemas/SiteServices"
+        links:
+          $ref: "#/components/schemas/SiteLinks"
         access:
           $ref: "#/components/schemas/SiteAccess"
       required:
         - branding
         - services
+        - links
         - access
     StreamSession:
       type: object

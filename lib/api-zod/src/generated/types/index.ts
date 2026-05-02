@@ -17,5 +17,6 @@ export * from "./serviceStatus";
 export * from "./siteAccess";
 export * from "./siteBranding";
 export * from "./siteConfig";
+export * from "./siteLinks";
 export * from "./siteServices";
 export * from "./streamSession";

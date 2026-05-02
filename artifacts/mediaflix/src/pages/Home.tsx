@@ -169,6 +169,7 @@ export default function Home() {
 
   const branding = config?.branding;
   const services = config?.services;
+  const links = config?.links;
   const access = config?.access;
 
   const siteName = branding?.name ?? "mediaflix";
@@ -182,9 +183,10 @@ export default function Home() {
   const accessUrl = access?.access_url?.trim() ?? "";
   const accessLabel = access?.access_label ?? "Request Access";
 
-  const tautulliUrl = services?.tautulli?.trim() ?? "";
-  const qbittorrentUrl = services?.qbittorrent?.trim() ?? "";
-  const sabnzbdUrl = services?.sabnzbd?.trim() ?? "";
+  const tautulliUrl = (links?.tautulli?.trim() || services?.tautulli?.trim()) ?? "";
+  const qbittorrentUrl = (links?.qbittorrent?.trim() || services?.qbittorrent?.trim()) ?? "";
+  const sabnzbdUrl = (links?.sabnzbd?.trim() || services?.sabnzbd?.trim()) ?? "";
+  const overseerrLinkUrl = (links?.overseerr?.trim() || services?.overseerr?.trim()) ?? "";
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden relative">
@@ -293,13 +295,17 @@ export default function Home() {
                   ))
                 : activeServices.map((key) => {
                     const meta = SERVICE_META[key];
-                    const url = services?.[key]?.trim() ?? "";
-                    const hasUrl = url !== "";
+                    const internalUrl = services?.[key]?.trim() ?? "";
+                    const linkUrl = links?.[key]?.trim() ?? "";
+                    const href = linkUrl || internalUrl;
+                    const hasUrl = href !== "";
+                    const isConfigured = internalUrl !== "" || linkUrl !== "";
                     const Tag = hasUrl ? "a" : "div";
+                    if (!isConfigured) return null;
                     return (
                       <Tag
                         key={key}
-                        {...(hasUrl ? { href: url, target: "_blank", rel: "noopener noreferrer" } : {})}
+                        {...(hasUrl ? { href, target: "_blank", rel: "noopener noreferrer" } : {})}
                         className="flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/[0.15] transition-all duration-200 group cursor-pointer"
                       >
                         <div className="transition-transform duration-200 group-hover:scale-110">
@@ -327,7 +333,7 @@ export default function Home() {
             <DownloadsCard downloads={downloads} sabnzbdUrl={sabnzbdUrl} qbittorrentUrl={qbittorrentUrl} />
 
             {/* Recent Requests */}
-            <RecentRequestsCard requestsData={requestsData} overseerrUrl={services?.overseerr?.trim() ?? ""} />
+            <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
           </div>
         </section>
 
@@ -364,17 +370,12 @@ const SERVICE_LABELS: { key: keyof HealthCheckData; name: string }[] = [
 function ServiceHealthBar({ health }: { health?: HealthCheckData }) {
   const [open, setOpen] = useState(false);
 
-  const configured = SERVICE_LABELS.filter((s) => health?.[s.key]?.configured);
-  const onlineCount = configured.filter((s) => health?.[s.key]?.ok).length;
+  if (!health) return null;
 
-  if (configured.length === 0) {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-        <span className="text-sm text-white/30">No services configured</span>
-      </div>
-    );
-  }
+  const configured = SERVICE_LABELS.filter((s) => health[s.key]?.configured);
+  const onlineCount = configured.filter((s) => health[s.key]?.ok).length;
+
+  if (configured.length === 0) return null;
 
   const allOnline = onlineCount === configured.length;
   const summaryColor = allOnline ? "text-green-400" : onlineCount === 0 ? "text-red-400" : "text-amber-400";

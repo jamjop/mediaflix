@@ -16,6 +16,7 @@ function loadSettings() {
 
     const branding = (parsed.branding as Record<string, string>) ?? {};
     const services = (parsed.services as Record<string, string>) ?? {};
+    const links = (parsed.links as Record<string, string>) ?? {};
     const access = (parsed.access as Record<string, string>) ?? {};
 
     return {
@@ -33,6 +34,15 @@ function loadSettings() {
         sabnzbd: services.sabnzbd ?? "",
         qbittorrent: services.qbittorrent ?? "",
       },
+      links: {
+        plex: links.plex ?? "",
+        overseerr: links.overseerr ?? "",
+        tautulli: links.tautulli ?? "",
+        radarr: links.radarr ?? "",
+        sonarr: links.sonarr ?? "",
+        sabnzbd: links.sabnzbd ?? "",
+        qbittorrent: links.qbittorrent ?? "",
+      },
       access: {
         request_url: access.request_url ?? "",
         request_label: access.request_label ?? "Request Media",
@@ -42,21 +52,15 @@ function loadSettings() {
     };
   } catch (err) {
     logger.warn({ err, path: SETTINGS_PATH }, "Could not read settings.yaml, using defaults");
+    const emptyServices = { plex: "", overseerr: "", tautulli: "", radarr: "", sonarr: "", sabnzbd: "", qbittorrent: "" };
     return {
       branding: {
         name: "mediaflix",
         tagline: "Your personal media universe.",
         accent_color: "#a855f7",
       },
-      services: {
-        plex: "",
-        overseerr: "",
-        tautulli: "",
-        radarr: "",
-        sonarr: "",
-        sabnzbd: "",
-        qbittorrent: "",
-      },
+      services: { ...emptyServices },
+      links: { ...emptyServices },
       access: {
         request_url: "",
         request_label: "Request Media",

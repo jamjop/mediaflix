@@ -34,6 +34,15 @@ export const GetConfigResponse = zod.object({
     sabnzbd: zod.string(),
     qbittorrent: zod.string(),
   }),
+  links: zod.object({
+    plex: zod.string(),
+    overseerr: zod.string(),
+    tautulli: zod.string(),
+    radarr: zod.string(),
+    sonarr: zod.string(),
+    sabnzbd: zod.string(),
+    qbittorrent: zod.string(),
+  }),
   access: zod.object({
     request_url: zod.string(),
     request_label: zod.string(),
