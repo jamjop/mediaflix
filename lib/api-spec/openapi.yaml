@@ -18,6 +18,8 @@ tags:
     description: Overseerr media requests
   - name: downloads
     description: Live download queue
+  - name: services
+    description: Service health status
 paths:
   /healthz:
     get:
@@ -58,6 +60,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivityData"
+  /service-status:
+    get:
+      operationId: getServiceStatus
+      tags: [services]
+      summary: Ping all configured services
+      description: Attempts a HEAD request to each configured service URL and returns reachability status.
+      responses:
+        "200":
+          description: Service health map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthCheckData"
   /requests:
     get:
       operationId: getRequests
@@ -209,6 +224,44 @@ components:
         - stream_count
         - sessions
         - configured
+    ServiceStatus:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        latency_ms:
+          type: integer
+        configured:
+          type: boolean
+      required:
+        - ok
+        - latency_ms
+        - configured
+    HealthCheckData:
+      type: object
+      properties:
+        plex:
+          $ref: "#/components/schemas/ServiceStatus"
+        overseerr:
+          $ref: "#/components/schemas/ServiceStatus"
+        tautulli:
+          $ref: "#/components/schemas/ServiceStatus"
+        radarr:
+          $ref: "#/components/schemas/ServiceStatus"
+        sonarr:
+          $ref: "#/components/schemas/ServiceStatus"
+        sabnzbd:
+          $ref: "#/components/schemas/ServiceStatus"
+        qbittorrent:
+          $ref: "#/components/schemas/ServiceStatus"
+      required:
+        - plex
+        - overseerr
+        - tautulli
+        - radarr
+        - sonarr
+        - sabnzbd
+        - qbittorrent
     MediaRequest:
       type: object
       properties:

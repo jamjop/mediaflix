@@ -57,6 +57,22 @@ export interface ActivityData {
   configured: boolean;
 }
 
+export interface ServiceStatus {
+  ok: boolean;
+  latency_ms: number;
+  configured: boolean;
+}
+
+export interface HealthCheckData {
+  plex: ServiceStatus;
+  overseerr: ServiceStatus;
+  tautulli: ServiceStatus;
+  radarr: ServiceStatus;
+  sonarr: ServiceStatus;
+  sabnzbd: ServiceStatus;
+  qbittorrent: ServiceStatus;
+}
+
 export interface MediaRequest {
   id: number;
   title: string;

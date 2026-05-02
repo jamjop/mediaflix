@@ -66,6 +66,48 @@ export const GetActivityResponse = zod.object({
 });
 
 /**
+ * Attempts a HEAD request to each configured service URL and returns reachability status.
+ * @summary Ping all configured services
+ */
+export const GetServiceStatusResponse = zod.object({
+  plex: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  overseerr: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  tautulli: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  radarr: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  sonarr: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  sabnzbd: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+  qbittorrent: zod.object({
+    ok: zod.boolean(),
+    latency_ms: zod.number(),
+    configured: zod.boolean(),
+  }),
+});
+
+/**
  * Proxies Overseerr request data server-side. Returns recent requests with title, poster, and status.
  * @summary Get recent Overseerr media requests
  */
