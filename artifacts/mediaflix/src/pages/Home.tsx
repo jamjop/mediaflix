@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine } from "lucide-react";
 import { useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters } from "@workspace/api-client-react";
 
 const FALLBACK_POSTERS = [
@@ -18,127 +19,64 @@ const FALLBACK_POSTERS = [
 
 type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent";
 
-const SERVICE_META: Record<ServiceKey, { name: string; description: string; defaultPort: string; icon: React.ReactNode }> = {
+type LucideIcon = React.ComponentType<{ className?: string }>;
+
+const SERVICE_META: Record<ServiceKey, { name: string; description: string; defaultPort: string; icon: LucideIcon; color: string; glow: string }> = {
   plex: {
     name: "Plex",
     description: "Stream your media",
     defaultPort: "32400",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#E5A00D" />
-        {/* Clean centered play triangle */}
-        <path d="M14 11L14 29L30 20Z" fill="white" />
-      </svg>
-    ),
+    icon: Play,
+    color: "from-amber-500 to-orange-600",
+    glow: "shadow-amber-500/20",
   },
   overseerr: {
     name: "Overseerr",
     description: "Request content",
     defaultPort: "5055",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#6D28D9" />
-        {/* Clapperboard top bar */}
-        <rect x="8" y="9" width="24" height="7" rx="2" fill="white" />
-        {/* Clapper stripes */}
-        <path d="M13 9L10 16M18 9L15 16M23 9L20 16M28 9L25 16" stroke="#6D28D9" strokeWidth="2" strokeLinecap="round" />
-        {/* Clapperboard body */}
-        <rect x="8" y="18" width="24" height="14" rx="2" fill="white" />
-        {/* Body lines */}
-        <rect x="11" y="21" width="18" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
-        <rect x="11" y="25" width="13" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
-        <rect x="11" y="29" width="16" height="1.5" rx="0.75" fill="#6D28D9" opacity="0.4" />
-      </svg>
-    ),
+    icon: Film,
+    color: "from-purple-500 to-indigo-600",
+    glow: "shadow-purple-500/20",
   },
   tautulli: {
     name: "Tautulli",
     description: "Watch statistics",
     defaultPort: "8181",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#0D9488" />
-        {/* Three rising bars */}
-        <rect x="8" y="25" width="6" height="8" rx="1.5" fill="white" />
-        <rect x="17" y="18" width="6" height="15" rx="1.5" fill="white" />
-        <rect x="26" y="10" width="6" height="23" rx="1.5" fill="white" />
-      </svg>
-    ),
+    icon: ChartColumn,
+    color: "from-teal-500 to-cyan-600",
+    glow: "shadow-teal-500/20",
   },
   radarr: {
     name: "Radarr",
     description: "Movie management",
     defaultPort: "7878",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#F59E0B" />
-        {/* Outer ring */}
-        <circle cx="20" cy="21" r="12" stroke="white" strokeWidth="1.5" strokeOpacity="0.35" fill="none" />
-        {/* Middle ring */}
-        <circle cx="20" cy="21" r="7.5" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" fill="none" />
-        {/* Inner ring */}
-        <circle cx="20" cy="21" r="3" stroke="white" strokeWidth="1.5" strokeOpacity="0.9" fill="none" />
-        {/* Sweep line */}
-        <line x1="20" y1="21" x2="29" y2="11" stroke="white" strokeWidth="2" strokeLinecap="round" />
-        {/* Blip dot */}
-        <circle cx="26.5" cy="13.5" r="2" fill="white" />
-        {/* Center dot */}
-        <circle cx="20" cy="21" r="1.8" fill="white" />
-      </svg>
-    ),
+    icon: Radar,
+    color: "from-yellow-500 to-amber-600",
+    glow: "shadow-yellow-500/20",
   },
   sonarr: {
     name: "Sonarr",
     description: "TV show management",
     defaultPort: "8989",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#2563EB" />
-        {/* TV body */}
-        <rect x="6" y="13" width="28" height="19" rx="3" fill="white" />
-        {/* TV screen */}
-        <rect x="9.5" y="16.5" width="21" height="12" rx="1.5" fill="#2563EB" />
-        {/* Antenna left */}
-        <line x1="15" y1="13" x2="11" y2="6" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        {/* Antenna right */}
-        <line x1="25" y1="13" x2="29" y2="6" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        {/* Stand */}
-        <rect x="17" y="32" width="6" height="2.5" rx="1" fill="white" />
-        <rect x="13" y="34.5" width="14" height="2" rx="1" fill="white" />
-      </svg>
-    ),
+    icon: Tv,
+    color: "from-sky-500 to-blue-600",
+    glow: "shadow-sky-500/20",
   },
   sabnzbd: {
     name: "SABnzbd",
     description: "Usenet downloads",
     defaultPort: "8080",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#22C55E" />
-        {/* Arrow shaft */}
-        <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
-        {/* Arrow head */}
-        <path d="M11 22L20 32L29 22Z" fill="white" />
-        {/* Tray */}
-        <rect x="10" y="33" width="20" height="3" rx="1.5" fill="white" />
-      </svg>
-    ),
+    icon: Download,
+    color: "from-green-500 to-emerald-600",
+    glow: "shadow-green-500/20",
   },
   qbittorrent: {
     name: "qBittorrent",
     description: "Torrent downloads",
     defaultPort: "8080",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-        <rect width="40" height="40" rx="8" fill="#1D4ED8" />
-        {/* Shaft */}
-        <rect x="18" y="8" width="4" height="15" rx="2" fill="white" />
-        {/* Arrow head */}
-        <path d="M11 21L20 31L29 21Z" fill="white" />
-        {/* Tray line */}
-        <rect x="10" y="33" width="20" height="3" rx="1.5" fill="white" />
-      </svg>
-    ),
+    icon: ArrowDownToLine,
+    color: "from-blue-500 to-indigo-600",
+    glow: "shadow-blue-500/20",
   },
 };
 
@@ -304,38 +242,41 @@ export default function Home() {
 
         {/* Quick Access */}
         {(isLoading || activeServices.length > 0) && (
-          <section className="max-w-4xl mx-auto px-6 pb-16">
-            <h2 className="text-center text-2xl font-semibold text-white/90 mb-8 tracking-wide">Quick Access</h2>
-            <div className={`grid gap-3 ${activeServices.length <= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"}`}>
-              {isLoading
-                ? Array.from({ length: 7 }).map((_, i) => (
-                    <div key={i} className="h-28 rounded-2xl bg-white/[0.04] border border-white/[0.05] animate-pulse" />
-                  ))
-                : activeServices.map((key) => {
-                    const meta = SERVICE_META[key];
-                    const internalUrl = services?.[key]?.trim() ?? "";
-                    const linkUrl = links?.[key]?.trim() ?? "";
-                    const href = linkUrl || internalUrl;
-                    const hasUrl = href !== "";
-                    const isConfigured = internalUrl !== "" || linkUrl !== "";
-                    const Tag = hasUrl ? "a" : "div";
-                    if (!isConfigured) return null;
-                    return (
-                      <Tag
-                        key={key}
-                        {...(hasUrl ? { href, target: "_blank", rel: "noopener noreferrer" } : {})}
-                        className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/[0.15] transition-all duration-200 group cursor-pointer"
-                      >
-                        <div className="transition-transform duration-200 group-hover:scale-110">
-                          {meta.icon}
-                        </div>
-                        <div className="text-center">
-                          <div className="text-white font-medium text-sm">{meta.name}</div>
-                          <div className="text-white/50 text-xs mt-0.5">{meta.description}</div>
-                        </div>
-                      </Tag>
-                    );
-                  })}
+          <section className="px-4 py-8">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-center text-2xl font-bold text-white/90 mb-6">Quick Access</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {isLoading
+                  ? Array.from({ length: 7 }).map((_, i) => (
+                      <div key={i} className="h-28 rounded-2xl bg-white/[0.04] border border-white/[0.05] animate-pulse" />
+                    ))
+                  : activeServices.map((key) => {
+                      const meta = SERVICE_META[key];
+                      const internalUrl = services?.[key]?.trim() ?? "";
+                      const linkUrl = links?.[key]?.trim() ?? "";
+                      const href = linkUrl || internalUrl;
+                      const hasUrl = href !== "";
+                      const isConfigured = internalUrl !== "" || linkUrl !== "";
+                      const Icon = meta.icon;
+                      const Tag = hasUrl ? "a" : "div";
+                      if (!isConfigured) return null;
+                      return (
+                        <Tag
+                          key={key}
+                          {...(hasUrl ? { href, target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className={`rounded-2xl p-5 flex flex-col items-center gap-3 cursor-pointer group transition-shadow hover:shadow-xl bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.09] ${meta.glow}`}
+                        >
+                          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="text-center">
+                            <p className="font-semibold text-sm text-white">{meta.name}</p>
+                            <p className="text-xs text-white/50 mt-0.5">{meta.description}</p>
+                          </div>
+                        </Tag>
+                      );
+                    })}
+              </div>
             </div>
           </section>
         )}
