@@ -282,7 +282,7 @@ export default function Home() {
         )}
 
         {/* Live Dashboard */}
-        <section className="max-w-4xl mx-auto px-4 py-8">
+        <section className="max-w-5xl mx-auto px-4 py-8">
           <h2 className="text-center text-2xl font-bold text-white/90 mb-6">Live Dashboard</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Now Watching */}
