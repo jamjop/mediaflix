@@ -10,6 +10,7 @@ const router: IRouter = Router();
 const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 
 function loadSabnzbdSettings(): { url: string; apiKey: string } {
+  const envKey = process.env.SABNZBD_API_KEY?.trim();
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
@@ -17,10 +18,10 @@ function loadSabnzbdSettings(): { url: string; apiKey: string } {
     const sabnzbd = (parsed.sabnzbd as Record<string, string>) ?? {};
     return {
       url: services.sabnzbd?.trim() ?? "",
-      apiKey: sabnzbd.api_key?.trim() ?? "",
+      apiKey: envKey ?? sabnzbd.api_key?.trim() ?? "",
     };
   } catch {
-    return { url: "", apiKey: "" };
+    return { url: "", apiKey: envKey ?? "" };
   }
 }
 

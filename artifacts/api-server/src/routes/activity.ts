@@ -10,6 +10,7 @@ const router: IRouter = Router();
 const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 
 function loadTautulliSettings(): { url: string; apiKey: string } {
+  const envKey = process.env.TAUTULLI_API_KEY?.trim();
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
@@ -17,10 +18,10 @@ function loadTautulliSettings(): { url: string; apiKey: string } {
     const tautulli = (parsed.tautulli as Record<string, string>) ?? {};
     return {
       url: services.tautulli?.trim() ?? "",
-      apiKey: tautulli.api_key?.trim() ?? "",
+      apiKey: envKey ?? tautulli.api_key?.trim() ?? "",
     };
   } catch {
-    return { url: "", apiKey: "" };
+    return { url: "", apiKey: envKey ?? "" };
   }
 }
 

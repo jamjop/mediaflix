@@ -10,6 +10,7 @@ const router: IRouter = Router();
 const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 
 function loadOverseerrSettings(): { url: string; apiKey: string } {
+  const envKey = process.env.OVERSEERR_API_KEY?.trim();
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
@@ -17,10 +18,10 @@ function loadOverseerrSettings(): { url: string; apiKey: string } {
     const overseerr = (parsed.overseerr as Record<string, string>) ?? {};
     return {
       url: services.overseerr?.trim() ?? "",
-      apiKey: overseerr.api_key?.trim() ?? "",
+      apiKey: envKey ?? overseerr.api_key?.trim() ?? "",
     };
   } catch {
-    return { url: "", apiKey: "" };
+    return { url: "", apiKey: envKey ?? "" };
   }
 }
 

@@ -27,18 +27,19 @@ const FALLBACK_POSTERS = [
 ].map((p) => `${BACKDROP_BASE}${p}`);
 
 function loadTmdbConfig(): { apiKey: string; source: TmdbSource } {
+  const envKey = process.env.TMDB_API_KEY?.trim();
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
     const tmdb = parsed.tmdb as Record<string, string> | undefined;
-    const apiKey = tmdb?.api_key?.trim() ?? "";
+    const apiKey = envKey ?? tmdb?.api_key?.trim() ?? "";
     const rawSource = tmdb?.source?.trim() ?? "now_playing";
     const source: TmdbSource = (VALID_SOURCES as readonly string[]).includes(rawSource)
       ? (rawSource as TmdbSource)
       : "now_playing";
     return { apiKey, source };
   } catch {
-    return { apiKey: "", source: "now_playing" };
+    return { apiKey: envKey ?? "", source: "now_playing" };
   }
 }
 
