@@ -75,6 +75,15 @@ export const GetActivityResponse = zod.object({
 });
 
 /**
+ * Fetches current now-playing movies from TMDB and returns poster image URLs for the background mosaic.
+ * @summary Get now-playing movie poster URLs
+ */
+export const GetPostersResponse = zod.object({
+  posters: zod.array(zod.string()),
+  source: zod.string(),
+});
+
+/**
  * Attempts a HEAD request to each configured service URL and returns reachability status.
  * @summary Ping all configured services
  */

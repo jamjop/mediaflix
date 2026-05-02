@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus } from "@workspace/api-client-react";
+import { useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters } from "@workspace/api-client-react";
 
-const MOVIE_POSTERS = [
+const FALLBACK_POSTERS = [
   "https://image.tmdb.org/t/p/w780/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
   "https://image.tmdb.org/t/p/w780/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
   "https://image.tmdb.org/t/p/w780/3bhkrj58Vtu7enYsLegHnDmni7.jpg",
@@ -143,10 +143,13 @@ export default function Home() {
   const [fading, setFading] = useState(false);
 
   const { data: config, isLoading } = useGetConfig();
+  const { data: postersData } = useGetPosters({ query: { staleTime: 6 * 60 * 60 * 1000 } });
   const { data: activity } = useGetActivity({ query: { refetchInterval: 30_000 } });
   const { data: downloads } = useGetDownloads({ query: { refetchInterval: 30_000 } });
   const { data: requestsData } = useGetRequests({ query: { refetchInterval: 60_000 } });
   const { data: serviceStatus } = useGetServiceStatus({ query: { refetchInterval: 30_000 } });
+
+  const moviePosters = postersData?.posters?.length ? postersData.posters : FALLBACK_POSTERS;
 
   useEffect(() => {
     if (config?.branding?.name) {
@@ -159,8 +162,8 @@ export default function Home() {
     const interval = setInterval(() => {
       setFading(true);
       setTimeout(() => {
-        setCurrentPoster((prev) => (prev + 1) % MOVIE_POSTERS.length);
-        setNextPoster((prev) => (prev + 1) % MOVIE_POSTERS.length);
+        setCurrentPoster((prev) => (prev + 1) % moviePosters.length);
+        setNextPoster((prev) => (prev + 1) % moviePosters.length);
         setFading(false);
       }, 1200);
     }, 5000);
@@ -196,13 +199,13 @@ export default function Home() {
           className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
           style={{ opacity: fading ? 0 : 1 }}
         >
-          <PosterGrid posterIndex={currentPoster} />
+          <PosterGrid posterIndex={currentPoster} posters={moviePosters} />
         </div>
         <div
           className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
           style={{ opacity: fading ? 1 : 0 }}
         >
-          <PosterGrid posterIndex={nextPoster} />
+          <PosterGrid posterIndex={nextPoster} posters={moviePosters} />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/80 via-[#0a0a0f]/70 to-[#0a0a0f]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]/60" />
@@ -818,10 +821,10 @@ function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; t
   );
 }
 
-function PosterGrid({ posterIndex }: { posterIndex: number }) {
+function PosterGrid({ posterIndex, posters: allPosters }: { posterIndex: number; posters: string[] }) {
   const posters = [];
   for (let i = 0; i < 12; i++) {
-    posters.push(MOVIE_POSTERS[(posterIndex + i) % MOVIE_POSTERS.length]);
+    posters.push(allPosters[(posterIndex + i) % allPosters.length]);
   }
   return (
     <div className="w-full h-full grid grid-cols-4 gap-1 scale-110 blur-[2px]" style={{ gridTemplateRows: "repeat(3, 1fr)" }}>

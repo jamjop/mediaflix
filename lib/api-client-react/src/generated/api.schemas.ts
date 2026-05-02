@@ -68,6 +68,11 @@ export interface ActivityData {
   configured: boolean;
 }
 
+export interface PostersData {
+  posters: string[];
+  source: string;
+}
+
 export interface ServiceStatus {
   ok: boolean;
   latency_ms: number;

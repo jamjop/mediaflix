@@ -48,6 +48,11 @@ overseerr:
 sabnzbd:
   api_key: "8e60cf87f4644ebaa8b1d6099b25e789"
 
+# TMDB integration — used to fetch now-playing movie posters for the background.
+# Free API key from https://www.themoviedb.org/settings/api
+tmdb:
+  api_key: "592970f68da763d1197d787ff23b2950"
+
 # Access buttons shown in the hero section
 access:
   # "Request Media" button — typically points to Overseerr

@@ -60,6 +60,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivityData"
+  /posters:
+    get:
+      operationId: getPosters
+      tags: [config]
+      summary: Get now-playing movie poster URLs
+      description: Fetches current now-playing movies from TMDB and returns poster image URLs for the background mosaic.
+      responses:
+        "200":
+          description: List of poster URLs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostersData"
   /service-status:
     get:
       operationId: getServiceStatus
@@ -252,6 +265,18 @@ components:
         - stream_count
         - sessions
         - configured
+    PostersData:
+      type: object
+      properties:
+        posters:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+      required:
+        - posters
+        - source
     ServiceStatus:
       type: object
       properties:

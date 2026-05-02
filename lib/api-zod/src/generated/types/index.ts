@@ -12,6 +12,7 @@ export * from "./downloadSlot";
 export * from "./healthCheckData";
 export * from "./healthStatus";
 export * from "./mediaRequest";
+export * from "./postersData";
 export * from "./requestsData";
 export * from "./serviceStatus";
 export * from "./siteAccess";

@@ -18,6 +18,7 @@ import type {
   DownloadsData,
   HealthCheckData,
   HealthStatus,
+  PostersData,
   RequestsData,
   SiteConfig,
 } from "./api.schemas";
@@ -241,6 +242,82 @@ export function useGetActivity<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetActivityQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Fetches current now-playing movies from TMDB and returns poster image URLs for the background mosaic.
+ * @summary Get now-playing movie poster URLs
+ */
+export const getGetPostersUrl = () => {
+  return `/api/posters`;
+};
+
+export const getPosters = async (
+  options?: RequestInit,
+): Promise<PostersData> => {
+  return customFetch<PostersData>(getGetPostersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPostersQueryKey = () => {
+  return [`/api/posters`] as const;
+};
+
+export const getGetPostersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPosters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPosters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPostersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPosters>>> = ({
+    signal,
+  }) => getPosters({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPosters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPosters>>
+>;
+export type GetPostersQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get now-playing movie poster URLs
+ */
+
+export function useGetPosters<
+  TData = Awaited<ReturnType<typeof getPosters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPosters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostersQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
