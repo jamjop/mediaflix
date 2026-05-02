@@ -9,25 +9,22 @@ const router: IRouter = Router();
 
 const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 const TMDB_BASE = "https://api.themoviedb.org/3";
-const POSTER_BASE = "https://image.tmdb.org/t/p/w780";
+const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
 
 const VALID_SOURCES = ["now_playing", "popular", "top_rated", "upcoming"] as const;
 type TmdbSource = (typeof VALID_SOURCES)[number];
 
+// Landscape backdrops (w1280) used when no TMDB key is configured
 const FALLBACK_POSTERS = [
-  "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
-  "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
-  "/3bhkrj58Vtu7enYsLegHnDmni7.jpg",
-  "/saHP97rTPS5eLmrLQEcANmKrsFl.jpg",
-  "/8kSerJrhrJWKLk1LViesGcnrUPE.jpg",
-  "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
-  "/oU7Oq2kFAAlGqbU4VoAE36g4hoI.jpg",
-  "/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
-  "/gNBCvtYyGPbjd0XknR3n2gMCOmg.jpg",
-  "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
-  "/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg",
-  "/rSPw7tgCH9c6NqICZef4kZjFOQ5.jpg",
-].map((p) => `${POSTER_BASE}${p}`);
+  "/s3TBrRGB1iav7gFOCNx3H31MoES.jpg", // Inception
+  "/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg", // The Dark Knight
+  "/xJHokMbljvjADYdit5fK5VQsXEG.jpg", // Interstellar
+  "/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", // The Avengers
+  "/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg", // Guardians of the Galaxy
+  "/9BBTo108Khn9VM37E0hOeGCLMiU.jpg", // The Matrix
+  "/Ab8mkHmkYADjU7wQiOkia9BzGvS.jpg", // Blade Runner 2049
+  "/3P52oz9HPQWxcwHOwxtyrVV1LKi.jpg", // Dune
+].map((p) => `${BACKDROP_BASE}${p}`);
 
 function loadTmdbConfig(): { apiKey: string; source: TmdbSource } {
   try {
