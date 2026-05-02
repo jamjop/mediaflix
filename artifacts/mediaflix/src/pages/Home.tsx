@@ -306,7 +306,7 @@ export default function Home() {
         {(isLoading || activeServices.length > 0) && (
           <section className="max-w-4xl mx-auto px-6 pb-16">
             <h2 className="text-center text-2xl font-semibold text-white/90 mb-8 tracking-wide">Quick Access</h2>
-            <div className={`grid gap-3 ${activeServices.length <= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"}`}>
+            <div className={`grid gap-4 ${activeServices.length <= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4"}`}>
               {isLoading
                 ? Array.from({ length: 7 }).map((_, i) => (
                     <div key={i} className="h-28 rounded-2xl bg-white/[0.04] border border-white/[0.05] animate-pulse" />
@@ -324,7 +324,7 @@ export default function Home() {
                       <Tag
                         key={key}
                         {...(hasUrl ? { href, target: "_blank", rel: "noopener noreferrer" } : {})}
-                        className="flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/[0.15] transition-all duration-200 group cursor-pointer"
+                        className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/[0.15] transition-all duration-200 group cursor-pointer"
                       >
                         <div className="transition-transform duration-200 group-hover:scale-110">
                           {meta.icon}
