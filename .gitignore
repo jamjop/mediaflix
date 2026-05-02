@@ -48,6 +48,6 @@ Thumbs.db
 .cache/
 .local/
 
-# Local secrets — never commit these
-.env
-settings.yaml
+# Secrets excluded by default — remove these lines if using a private repo
+# .env
+# settings.yaml
