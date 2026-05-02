@@ -38,13 +38,24 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     icon: (
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
         <rect width="40" height="40" rx="8" fill="#7C3AED" />
-        {/* Film clapperboard */}
-        <rect x="8" y="17" width="24" height="15" rx="2" fill="white" />
-        <rect x="8" y="11" width="24" height="7" rx="2" fill="white" />
-        <path d="M14 11L11 18M19.5 11L16.5 18M25 11L22 18M30 11L27 18" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" />
-        <rect x="11" y="20" width="18" height="2" rx="1" fill="#7C3AED" />
-        <rect x="11" y="24" width="12" height="2" rx="1" fill="#7C3AED" />
-        <rect x="11" y="28" width="15" height="2" rx="1" fill="#7C3AED" />
+        {/* Film strip body */}
+        <rect x="6" y="11" width="28" height="18" rx="2" fill="white" />
+        {/* Left sprocket strip */}
+        <rect x="6" y="11" width="6" height="18" fill="#5B21B6" />
+        {/* Right sprocket strip */}
+        <rect x="28" y="11" width="6" height="18" fill="#5B21B6" />
+        {/* Sprocket holes — left */}
+        <rect x="8" y="14" width="2" height="3" rx="0.5" fill="white" />
+        <rect x="8" y="19" width="2" height="3" rx="0.5" fill="white" />
+        <rect x="8" y="24" width="2" height="3" rx="0.5" fill="white" />
+        {/* Sprocket holes — right */}
+        <rect x="30" y="14" width="2" height="3" rx="0.5" fill="white" />
+        <rect x="30" y="19" width="2" height="3" rx="0.5" fill="white" />
+        <rect x="30" y="24" width="2" height="3" rx="0.5" fill="white" />
+        {/* Frame window */}
+        <rect x="14" y="14" width="12" height="12" rx="1" fill="#7C3AED" />
+        {/* Play triangle inside frame */}
+        <path d="M17.5 17.5L17.5 22.5L22.5 20Z" fill="white" />
       </svg>
     ),
   },
