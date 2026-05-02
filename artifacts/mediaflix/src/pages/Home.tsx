@@ -3,18 +3,14 @@ import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine } from "l
 import { useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters } from "@workspace/api-client-react";
 
 const FALLBACK_POSTERS = [
-  "https://image.tmdb.org/t/p/w780/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
-  "https://image.tmdb.org/t/p/w780/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
-  "https://image.tmdb.org/t/p/w780/3bhkrj58Vtu7enYsLegHnDmni7.jpg",
-  "https://image.tmdb.org/t/p/w780/saHP97rTPS5eLmrLQEcANmKrsFl.jpg",
-  "https://image.tmdb.org/t/p/w780/8kSerJrhrJWKLk1LViesGcnrUPE.jpg",
-  "https://image.tmdb.org/t/p/w780/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
-  "https://image.tmdb.org/t/p/w780/oU7Oq2kFAAlGqbU4VoAE36g4hoI.jpg",
-  "https://image.tmdb.org/t/p/w780/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
-  "https://image.tmdb.org/t/p/w780/gNBCvtYyGPbjd0XknR3n2gMCOmg.jpg",
-  "https://image.tmdb.org/t/p/w780/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
-  "https://image.tmdb.org/t/p/w780/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg",
-  "https://image.tmdb.org/t/p/w780/rSPw7tgCH9c6NqICZef4kZjFOQ5.jpg",
+  "https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
+  "https://image.tmdb.org/t/p/w1280/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg",
+  "https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
+  "https://image.tmdb.org/t/p/w1280/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+  "https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
+  "https://image.tmdb.org/t/p/w1280/9BBTo108Khn9VM37E0hOeGCLMiU.jpg",
+  "https://image.tmdb.org/t/p/w1280/Ab8mkHmkYADjU7wQiOkia9BzGvS.jpg",
+  "https://image.tmdb.org/t/p/w1280/3P52oz9HPQWxcwHOwxtyrVV1LKi.jpg",
 ];
 
 type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent";
@@ -152,20 +148,22 @@ export default function Home() {
           </>
         ) : (
           <>
-            <div
-              className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
+            <img
+              key={currentPoster}
+              src={moviePosters[currentPoster]}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
               style={{ opacity: fading ? 0 : 1 }}
-            >
-              <PosterGrid posterIndex={currentPoster} posters={moviePosters} />
-            </div>
-            <div
-              className="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"
+            />
+            <img
+              key={`next-${nextPoster}`}
+              src={moviePosters[nextPoster]}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
               style={{ opacity: fading ? 1 : 0 }}
-            >
-              <PosterGrid posterIndex={nextPoster} posters={moviePosters} />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/80 via-[#0a0a0f]/70 to-[#0a0a0f]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]/60" />
+            />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/30 to-transparent" />
           </>
         )}
       </div>
@@ -765,18 +763,3 @@ function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; t
   );
 }
 
-function PosterGrid({ posterIndex, posters: allPosters }: { posterIndex: number; posters: string[] }) {
-  const posters = [];
-  for (let i = 0; i < 12; i++) {
-    posters.push(allPosters[(posterIndex + i) % allPosters.length]);
-  }
-  return (
-    <div className="w-full h-full grid grid-cols-4 gap-1 scale-110 blur-[2px]" style={{ gridTemplateRows: "repeat(3, 1fr)" }}>
-      {posters.map((src, i) => (
-        <div key={i} className="overflow-hidden bg-gray-900">
-          <img src={src} alt="" className="w-full h-full object-cover opacity-60" style={{ objectPosition: "center top" }} />
-        </div>
-      ))}
-    </div>
-  );
-}

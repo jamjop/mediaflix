@@ -51,7 +51,7 @@ async function fetchPosters(apiKey: string, source: TmdbSource): Promise<string[
     return cached.posters;
   }
 
-  // Fetch two pages (~40 movies) for a varied mosaic
+  // Fetch two pages (~40 movies) for a varied rotation
   const [page1, page2] = await Promise.all([
     fetch(`${TMDB_BASE}/movie/${source}?api_key=${apiKey}&language=en-US&page=1`, {
       signal: AbortSignal.timeout(8000),
@@ -63,16 +63,16 @@ async function fetchPosters(apiKey: string, source: TmdbSource): Promise<string[
 
   if (!page1.ok) throw new Error(`TMDB responded ${page1.status}`);
 
-  const data1 = (await page1.json()) as { results: Array<{ poster_path: string | null }> };
+  const data1 = (await page1.json()) as { results: Array<{ backdrop_path: string | null }> };
   const data2 = page2.ok
-    ? ((await page2.json()) as { results: Array<{ poster_path: string | null }> })
+    ? ((await page2.json()) as { results: Array<{ backdrop_path: string | null }> })
     : { results: [] };
 
   const posters = [...data1.results, ...data2.results]
-    .filter((m) => m.poster_path)
-    .map((m) => `${POSTER_BASE}${m.poster_path}`);
+    .filter((m) => m.backdrop_path)
+    .map((m) => `${BACKDROP_BASE}${m.backdrop_path}`);
 
-  if (posters.length < 8) throw new Error("Too few poster results from TMDB");
+  if (posters.length < 4) throw new Error("Too few backdrop results from TMDB");
 
   cache[source] = { posters, expiry: Date.now() + 6 * 60 * 60 * 1000 };
   return posters;
