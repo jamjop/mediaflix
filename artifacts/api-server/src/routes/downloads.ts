@@ -1,13 +1,14 @@
 import { Router, type IRouter } from "express";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { fileURLToPath } from "url";
 import yaml from "js-yaml";
 import { GetDownloadsResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
+const SETTINGS_PATH =
+  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
 
 function loadSabnzbdSettings(): { url: string; apiKey: string } {
   const envKey = process.env.SABNZBD_API_KEY?.trim();

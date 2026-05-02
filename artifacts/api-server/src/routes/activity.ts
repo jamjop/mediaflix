@@ -1,13 +1,16 @@
 import { Router, type IRouter } from "express";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { fileURLToPath } from "url";
 import yaml from "js-yaml";
 import { GetActivityResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
+// Resolve relative to the compiled bundle (dist/index.mjs → ../../.. → repo root).
+// Override with SETTINGS_PATH env var for non-standard layouts.
+const SETTINGS_PATH =
+  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
 
 function loadTautulliSettings(): { url: string; apiKey: string } {
   const envKey = process.env.TAUTULLI_API_KEY?.trim();

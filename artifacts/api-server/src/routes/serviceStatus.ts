@@ -1,13 +1,14 @@
 import { Router, type IRouter } from "express";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { fileURLToPath } from "url";
 import yaml from "js-yaml";
 import { GetServiceStatusResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
+const SETTINGS_PATH =
+  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
 
 type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent";
 const SERVICE_KEYS: ServiceKey[] = ["plex", "overseerr", "tautulli", "radarr", "sonarr", "sabnzbd", "qbittorrent"];
