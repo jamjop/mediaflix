@@ -11,6 +11,9 @@ const SETTINGS_PATH = join(process.cwd(), "..", "..", "settings.yaml");
 const TMDB_BASE = "https://api.themoviedb.org/3";
 const POSTER_BASE = "https://image.tmdb.org/t/p/w780";
 
+const VALID_SOURCES = ["now_playing", "popular", "top_rated", "upcoming"] as const;
+type TmdbSource = (typeof VALID_SOURCES)[number];
+
 const FALLBACK_POSTERS = [
   "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
   "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
@@ -26,39 +29,42 @@ const FALLBACK_POSTERS = [
   "/rSPw7tgCH9c6NqICZef4kZjFOQ5.jpg",
 ].map((p) => `${POSTER_BASE}${p}`);
 
-function loadApiKey(): string {
+function loadTmdbConfig(): { apiKey: string; source: TmdbSource } {
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
     const parsed = yaml.load(raw) as Record<string, unknown>;
     const tmdb = parsed.tmdb as Record<string, string> | undefined;
-    return tmdb?.api_key?.trim() ?? "";
+    const apiKey = tmdb?.api_key?.trim() ?? "";
+    const rawSource = tmdb?.source?.trim() ?? "now_playing";
+    const source: TmdbSource = (VALID_SOURCES as readonly string[]).includes(rawSource)
+      ? (rawSource as TmdbSource)
+      : "now_playing";
+    return { apiKey, source };
   } catch {
-    return "";
+    return { apiKey: "", source: "now_playing" };
   }
 }
 
-// Simple in-memory cache — refresh every 6 hours
-let cachedPosters: string[] = [];
-let cacheExpiry = 0;
+// Per-source cache so changing source in settings takes effect immediately
+const cache: Partial<Record<TmdbSource, { posters: string[]; expiry: number }>> = {};
 
-async function fetchNowPlayingPosters(apiKey: string): Promise<string[]> {
-  if (Date.now() < cacheExpiry && cachedPosters.length > 0) {
-    return cachedPosters;
+async function fetchPosters(apiKey: string, source: TmdbSource): Promise<string[]> {
+  const cached = cache[source];
+  if (cached && Date.now() < cached.expiry && cached.posters.length > 0) {
+    return cached.posters;
   }
 
-  // Fetch two pages to get ~40 movies for a varied mosaic
+  // Fetch two pages (~40 movies) for a varied mosaic
   const [page1, page2] = await Promise.all([
-    fetch(`${TMDB_BASE}/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`, {
+    fetch(`${TMDB_BASE}/movie/${source}?api_key=${apiKey}&language=en-US&page=1`, {
       signal: AbortSignal.timeout(8000),
     }),
-    fetch(`${TMDB_BASE}/movie/now_playing?api_key=${apiKey}&language=en-US&page=2`, {
+    fetch(`${TMDB_BASE}/movie/${source}?api_key=${apiKey}&language=en-US&page=2`, {
       signal: AbortSignal.timeout(8000),
     }),
   ]);
 
-  if (!page1.ok) {
-    throw new Error(`TMDB responded ${page1.status}`);
-  }
+  if (!page1.ok) throw new Error(`TMDB responded ${page1.status}`);
 
   const data1 = (await page1.json()) as { results: Array<{ poster_path: string | null }> };
   const data2 = page2.ok
@@ -69,17 +75,14 @@ async function fetchNowPlayingPosters(apiKey: string): Promise<string[]> {
     .filter((m) => m.poster_path)
     .map((m) => `${POSTER_BASE}${m.poster_path}`);
 
-  if (posters.length < 8) {
-    throw new Error("Too few poster results from TMDB");
-  }
+  if (posters.length < 8) throw new Error("Too few poster results from TMDB");
 
-  cachedPosters = posters;
-  cacheExpiry = Date.now() + 6 * 60 * 60 * 1000; // 6 hours
+  cache[source] = { posters, expiry: Date.now() + 6 * 60 * 60 * 1000 };
   return posters;
 }
 
 router.get("/posters", async (_req, res): Promise<void> => {
-  const apiKey = loadApiKey();
+  const { apiKey, source } = loadTmdbConfig();
 
   if (!apiKey) {
     res.json(GetPostersResponse.parse({ posters: FALLBACK_POSTERS, source: "fallback" }));
@@ -87,10 +90,10 @@ router.get("/posters", async (_req, res): Promise<void> => {
   }
 
   try {
-    const posters = await fetchNowPlayingPosters(apiKey);
-    res.json(GetPostersResponse.parse({ posters, source: "tmdb" }));
+    const posters = await fetchPosters(apiKey, source);
+    res.json(GetPostersResponse.parse({ posters, source }));
   } catch (err) {
-    logger.warn({ err }, "Failed to fetch TMDB posters, using fallback");
+    logger.warn({ err, source }, "Failed to fetch TMDB posters, using fallback");
     res.json(GetPostersResponse.parse({ posters: FALLBACK_POSTERS, source: "fallback" }));
   }
 });
