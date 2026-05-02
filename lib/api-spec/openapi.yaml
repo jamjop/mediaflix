@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: config
+    description: Site configuration
 paths:
   /healthz:
     get:
@@ -24,6 +26,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /config:
+    get:
+      operationId: getConfig
+      tags: [config]
+      summary: Get site configuration
+      description: Returns site branding, service URLs, and access settings read from settings.yaml
+      responses:
+        "200":
+          description: Site configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +48,70 @@ components:
           type: string
       required:
         - status
-
+    SiteServices:
+      type: object
+      properties:
+        plex:
+          type: string
+        overseerr:
+          type: string
+        tautulli:
+          type: string
+        radarr:
+          type: string
+        sonarr:
+          type: string
+        sabnzbd:
+          type: string
+        qbittorrent:
+          type: string
+      required:
+        - plex
+        - overseerr
+        - tautulli
+        - radarr
+        - sonarr
+        - sabnzbd
+        - qbittorrent
+    SiteBranding:
+      type: object
+      properties:
+        name:
+          type: string
+        tagline:
+          type: string
+        accent_color:
+          type: string
+      required:
+        - name
+        - tagline
+        - accent_color
+    SiteAccess:
+      type: object
+      properties:
+        request_url:
+          type: string
+        request_label:
+          type: string
+        access_url:
+          type: string
+        access_label:
+          type: string
+      required:
+        - request_url
+        - request_label
+        - access_url
+        - access_label
+    SiteConfig:
+      type: object
+      properties:
+        branding:
+          $ref: "#/components/schemas/SiteBranding"
+        services:
+          $ref: "#/components/schemas/SiteServices"
+        access:
+          $ref: "#/components/schemas/SiteAccess"
+      required:
+        - branding
+        - services
+        - access

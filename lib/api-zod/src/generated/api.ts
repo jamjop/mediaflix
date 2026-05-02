@@ -14,3 +14,30 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Returns site branding, service URLs, and access settings read from settings.yaml
+ * @summary Get site configuration
+ */
+export const GetConfigResponse = zod.object({
+  branding: zod.object({
+    name: zod.string(),
+    tagline: zod.string(),
+    accent_color: zod.string(),
+  }),
+  services: zod.object({
+    plex: zod.string(),
+    overseerr: zod.string(),
+    tautulli: zod.string(),
+    radarr: zod.string(),
+    sonarr: zod.string(),
+    sabnzbd: zod.string(),
+    qbittorrent: zod.string(),
+  }),
+  access: zod.object({
+    request_url: zod.string(),
+    request_label: zod.string(),
+    access_url: zod.string(),
+    access_label: zod.string(),
+  }),
+});

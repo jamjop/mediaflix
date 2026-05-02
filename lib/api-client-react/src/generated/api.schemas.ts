@@ -8,3 +8,32 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface SiteServices {
+  plex: string;
+  overseerr: string;
+  tautulli: string;
+  radarr: string;
+  sonarr: string;
+  sabnzbd: string;
+  qbittorrent: string;
+}
+
+export interface SiteBranding {
+  name: string;
+  tagline: string;
+  accent_color: string;
+}
+
+export interface SiteAccess {
+  request_url: string;
+  request_label: string;
+  access_url: string;
+  access_label: string;
+}
+
+export interface SiteConfig {
+  branding: SiteBranding;
+  services: SiteServices;
+  access: SiteAccess;
+}

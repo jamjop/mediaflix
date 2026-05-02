@@ -1,0 +1,31 @@
+# MediaFlix Site Configuration
+# Edit this file to configure your media center landing page.
+# Restart the API server after making changes.
+
+branding:
+  # The brand name displayed as the main logo (gradient part + plain part)
+  name: "mediaflix"
+  # Subtitle shown below the logo
+  tagline: "Your personal streaming universe — all your media services, stats, and downloads in one beautiful dashboard."
+  # Accent color for the gradient logo (not currently used, kept for future theming)
+  accent_color: "#a855f7"
+
+# Service URLs — set to the local IP:port of each service.
+# Leave as empty string "" to hide that service card from the page.
+services:
+  plex: ""         # e.g. http://192.168.1.10:32400
+  overseerr: ""    # e.g. http://192.168.1.10:5055
+  tautulli: ""     # e.g. http://192.168.1.10:8181
+  radarr: ""       # e.g. http://192.168.1.10:7878
+  sonarr: ""       # e.g. http://192.168.1.10:8989
+  sabnzbd: ""      # e.g. http://192.168.1.10:8080
+  qbittorrent: ""  # e.g. http://192.168.1.10:8080
+
+# Access buttons shown in the hero section
+access:
+  # "Request Media" button — typically points to Overseerr
+  request_url: ""
+  request_label: "Request Media"
+  # "Request Access" button — link for new users to request login credentials
+  access_url: ""
+  access_label: "Request Access"
