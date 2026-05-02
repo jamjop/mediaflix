@@ -254,10 +254,8 @@ export default function Home() {
                       const linkUrl = links?.[key]?.trim() ?? "";
                       const href = linkUrl || internalUrl;
                       const hasUrl = href !== "";
-                      const isConfigured = internalUrl !== "" || linkUrl !== "";
                       const Icon = meta.icon;
                       const Tag = hasUrl ? "a" : "div";
-                      if (!isConfigured) return null;
                       return (
                         <Tag
                           key={key}

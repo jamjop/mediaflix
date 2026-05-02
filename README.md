@@ -117,6 +117,8 @@ pnpm --filter @workspace/api-server run build
 pnpm --filter @workspace/mediaflix run build
 ```
 
+> **Note:** `BASE_PATH` defaults to `/` so no extra environment variables are needed for a standard nginx deployment. If you're serving the site under a sub-path (e.g. `/mediaflix/`), set `BASE_PATH=/mediaflix/ pnpm --filter @workspace/mediaflix run build`.
+
 ---
 
 ## 6. Deploy the frontend
