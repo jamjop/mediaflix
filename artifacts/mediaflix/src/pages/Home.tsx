@@ -24,7 +24,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Stream your media",
     defaultPort: "32400",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#E5A00D" />
         {/* Plex chevron arrow */}
         <path d="M10 9L28 20L10 31L10 25L20 20L10 15Z" fill="white" />
@@ -36,7 +36,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Request content",
     defaultPort: "5055",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#7C3AED" />
         {/* Film strip body */}
         <rect x="6" y="11" width="28" height="18" rx="2" fill="white" />
@@ -64,7 +64,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Watch statistics",
     defaultPort: "8181",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#0D9488" />
         <rect x="8" y="24" width="5" height="8" rx="1" fill="white" />
         <rect x="17" y="18" width="5" height="14" rx="1" fill="white" />
@@ -77,7 +77,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Movie management",
     defaultPort: "7878",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#F59E0B" />
         {/* Radar scope: crosshairs */}
         <line x1="20" y1="8" x2="20" y2="32" stroke="white" strokeWidth="0.8" strokeOpacity="0.35" />
@@ -100,7 +100,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "TV show management",
     defaultPort: "8989",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#3B82F6" />
         {/* TV body */}
         <rect x="7" y="14" width="26" height="18" rx="3" fill="white" />
@@ -121,7 +121,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Usenet downloads",
     defaultPort: "8080",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#22C55E" />
         {/* Arrow shaft */}
         <rect x="18" y="9" width="4" height="14" rx="2" fill="white" />
@@ -137,7 +137,7 @@ const SERVICE_META: Record<ServiceKey, { name: string; description: string; defa
     description: "Torrent downloads",
     defaultPort: "8080",
     icon: (
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
         <rect width="40" height="40" rx="8" fill="#2563EB" />
         <path d="M20 11V22M20 22L15 17M20 22L25 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M12 27H28" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
