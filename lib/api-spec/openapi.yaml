@@ -20,6 +20,8 @@ tags:
     description: Live download queue
   - name: services
     description: Service health status
+  - name: access
+    description: Access request form
 paths:
   /healthz:
     get:
@@ -112,6 +114,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DownloadsData"
+  /access-request:
+    post:
+      operationId: submitAccessRequest
+      tags: [access]
+      summary: Submit a server access request
+      description: Validates CAPTCHA, rate-limits, checks honeypot, and sends an email to the admin with the requester's Plex username.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessRequestBody"
+      responses:
+        "200":
+          description: Request result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequestResponse"
+        "400":
+          description: Validation or CAPTCHA error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequestResponse"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequestResponse"
 components:
   schemas:
     HealthStatus:
@@ -220,6 +253,8 @@ components:
           $ref: "#/components/schemas/SiteLinks"
         access:
           $ref: "#/components/schemas/SiteAccess"
+        captcha_site_key:
+          type: string
       required:
         - background
         - branding
@@ -417,3 +452,36 @@ components:
         - noofslots
         - slots
         - configured
+    AccessRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+        plex_username:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        turnstile_token:
+          type: string
+        _hp:
+          type: string
+        _ts:
+          type: number
+      required:
+        - name
+        - plex_username
+        - email
+        - turnstile_token
+        - _ts
+    AccessRequestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message

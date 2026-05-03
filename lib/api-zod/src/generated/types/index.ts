@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./accessRequestBody";
+export * from "./accessRequestResponse";
 export * from "./activityData";
 export * from "./downloadsData";
 export * from "./downloadSlot";

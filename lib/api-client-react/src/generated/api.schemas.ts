@@ -52,6 +52,7 @@ export interface SiteConfig {
   services: SiteServices;
   links: SiteLinks;
   access: SiteAccess;
+  captcha_site_key?: string;
 }
 
 export interface StreamSession {
@@ -128,4 +129,19 @@ export interface DownloadsData {
   noofslots: number;
   slots: DownloadSlot[];
   configured: boolean;
+}
+
+export interface AccessRequestBody {
+  name: string;
+  plex_username: string;
+  email: string;
+  message?: string;
+  turnstile_token: string;
+  _hp?: string;
+  _ts: number;
+}
+
+export interface AccessRequestResponse {
+  success: boolean;
+  message: string;
 }

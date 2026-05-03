@@ -20,6 +20,7 @@ function loadSettings() {
     const services = (parsed.services as Record<string, string>) ?? {};
     const links = (parsed.links as Record<string, string>) ?? {};
     const access = (parsed.access as Record<string, string>) ?? {};
+    const turnstile = (parsed.turnstile as Record<string, string>) ?? {};
 
     return {
       background: {
@@ -54,6 +55,7 @@ function loadSettings() {
         access_url: access.access_url ?? "",
         access_label: access.access_label ?? "Request Access",
       },
+      captcha_site_key: turnstile.site_key ?? "",
     };
   } catch (err) {
     logger.warn({ err, path: SETTINGS_PATH }, "Could not read settings.yaml, using defaults");

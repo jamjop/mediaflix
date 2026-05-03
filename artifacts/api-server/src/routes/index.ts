@@ -6,6 +6,7 @@ import activityRouter from "./activity";
 import serviceStatusRouter from "./serviceStatus";
 import requestsRouter from "./requests";
 import downloadsRouter from "./downloads";
+import accessRequestRouter from "./accessRequest";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(activityRouter);
 router.use(serviceStatusRouter);
 router.use(requestsRouter);
 router.use(downloadsRouter);
+router.use(accessRequestRouter);
 
 export default router;

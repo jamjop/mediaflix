@@ -65,6 +65,12 @@ access:
   # "Request Media" button — typically points to Overseerr
   request_url: "https://requests.noahflix.net"
   request_label: "Request Media"
-  # "Request Access" button — link for new users to request login credentials
-  access_url: ""
+  # "Request Access" button — links to the built-in request form
+  access_url: "/request-access"
   access_label: "Request Access"
+
+# Cloudflare Turnstile — CAPTCHA protection for the access request form.
+# Get a free site key + secret key at: https://dash.cloudflare.com/?to=/:account/turnstile
+# The site_key is public (used in the browser). The secret_key goes in .env as TURNSTILE_SECRET_KEY.
+turnstile:
+  site_key: ""

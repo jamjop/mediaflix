@@ -5,15 +5,20 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
 import type {
+  AccessRequestBody,
+  AccessRequestResponse,
   ActivityData,
   DownloadsData,
   HealthCheckData,
@@ -24,7 +29,7 @@ import type {
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -553,3 +558,90 @@ export function useGetDownloads<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Validates CAPTCHA, rate-limits, checks honeypot, and sends an email to the admin with the requester's Plex username.
+ * @summary Submit a server access request
+ */
+export const getSubmitAccessRequestUrl = () => {
+  return `/api/access-request`;
+};
+
+export const submitAccessRequest = async (
+  accessRequestBody: AccessRequestBody,
+  options?: RequestInit,
+): Promise<AccessRequestResponse> => {
+  return customFetch<AccessRequestResponse>(getSubmitAccessRequestUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(accessRequestBody),
+  });
+};
+
+export const getSubmitAccessRequestMutationOptions = <
+  TError = ErrorType<AccessRequestResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof submitAccessRequest>>,
+    TError,
+    { data: BodyType<AccessRequestBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof submitAccessRequest>>,
+  TError,
+  { data: BodyType<AccessRequestBody> },
+  TContext
+> => {
+  const mutationKey = ["submitAccessRequest"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof submitAccessRequest>>,
+    { data: BodyType<AccessRequestBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return submitAccessRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SubmitAccessRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof submitAccessRequest>>
+>;
+export type SubmitAccessRequestMutationBody = BodyType<AccessRequestBody>;
+export type SubmitAccessRequestMutationError = ErrorType<AccessRequestResponse>;
+
+/**
+ * @summary Submit a server access request
+ */
+export const useSubmitAccessRequest = <
+  TError = ErrorType<AccessRequestResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof submitAccessRequest>>,
+    TError,
+    { data: BodyType<AccessRequestBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof submitAccessRequest>>,
+  TError,
+  { data: BodyType<AccessRequestBody> },
+  TContext
+> => {
+  return useMutation(getSubmitAccessRequestMutationOptions(options));
+};

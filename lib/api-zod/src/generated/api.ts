@@ -52,6 +52,7 @@ export const GetConfigResponse = zod.object({
     access_url: zod.string(),
     access_label: zod.string(),
   }),
+  captcha_site_key: zod.string().optional(),
 });
 
 /**
@@ -170,4 +171,23 @@ export const GetDownloadsResponse = zod.object({
     }),
   ),
   configured: zod.boolean(),
+});
+
+/**
+ * Validates CAPTCHA, rate-limits, checks honeypot, and sends an email to the admin with the requester's Plex username.
+ * @summary Submit a server access request
+ */
+export const SubmitAccessRequestBody = zod.object({
+  name: zod.string(),
+  plex_username: zod.string(),
+  email: zod.string(),
+  message: zod.string().optional(),
+  turnstile_token: zod.string(),
+  _hp: zod.string().optional(),
+  _ts: zod.number(),
+});
+
+export const SubmitAccessRequestResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string(),
 });

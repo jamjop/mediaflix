@@ -17,4 +17,5 @@ export interface SiteConfig {
   services: SiteServices;
   links: SiteLinks;
   access: SiteAccess;
+  captcha_site_key?: string;
 }

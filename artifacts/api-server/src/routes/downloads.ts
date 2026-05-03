@@ -26,16 +26,16 @@ function loadSabnzbdSettings(): { url: string; apiKey: string } {
   }
 }
 
-const EMPTY: Parameters<typeof GetDownloadsResponse.parse>[0] = {
+const EMPTY = {
   speed: "0",
   kbpersec: "0",
   mb: "0",
   mbleft: "0",
   diskspace1: "0",
   noofslots: 0,
-  slots: [],
+  slots: [] as Array<Record<string, unknown>>,
   configured: false,
-};
+} as const satisfies Parameters<typeof GetDownloadsResponse.parse>[0];
 
 router.get("/downloads", async (_req, res): Promise<void> => {
   const { url, apiKey } = loadSabnzbdSettings();
