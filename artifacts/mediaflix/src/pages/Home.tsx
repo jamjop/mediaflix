@@ -205,8 +205,6 @@ export default function Home() {
             {(requestUrl || !isLoading) && (
               <a
                 href={requestUrl || undefined}
-                target={requestUrl ? "_blank" : undefined}
-                rel="noopener noreferrer"
                 className="flex items-center gap-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-purple-900/40 hover:shadow-purple-800/60 hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -222,8 +220,6 @@ export default function Home() {
             {(accessUrl || !isLoading) && (
               <a
                 href={accessUrl || undefined}
-                target={accessUrl ? "_blank" : undefined}
-                rel="noopener noreferrer"
                 className="flex items-center gap-2.5 border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-semibold px-7 py-3.5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -259,7 +255,7 @@ export default function Home() {
                       return (
                         <Tag
                           key={key}
-                          {...(hasUrl ? { href, target: "_blank", rel: "noopener noreferrer" } : {})}
+                          {...(hasUrl ? { href } : {})}
                           className={`rounded-2xl p-5 flex flex-col items-center gap-3 cursor-pointer group transition-shadow hover:shadow-xl bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.09] ${meta.glow}`}
                         >
                           <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
@@ -647,12 +643,12 @@ function DownloadsCard({
           {(qbittorrentUrl || sabnzbdUrl) && (
             <div className="flex items-center justify-center gap-3 mt-2">
               {qbittorrentUrl && (
-                <a href={qbittorrentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
+                <a href={qbittorrentUrl} className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
                   qBittorrent →
                 </a>
               )}
               {sabnzbdUrl && (
-                <a href={sabnzbdUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
+                <a href={sabnzbdUrl}  className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
                   SABnzbd →
                 </a>
               )}
@@ -751,7 +747,7 @@ function NowWatchingCard({ activity, tautulliUrl }: { activity?: ActivityData; t
         <div className="py-10 text-center">
           <p className="text-white/30 text-sm">{!configured ? "Configure Tautulli to see live streams." : "Nothing streaming right now."}</p>
           {tautulliUrl && (
-            <a href={tautulliUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors mt-2 inline-block">
+            <a href={tautulliUrl}  className="text-xs text-purple-400/70 hover:text-purple-400 transition-colors mt-2 inline-block">
               Open Tautulli →
             </a>
           )}
