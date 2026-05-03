@@ -208,6 +208,8 @@ export default function RequestAccess() {
                       </span>
                       <a
                         href="https://www.plex.tv/sign-up/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center gap-0.5"
                       >
                         plex.tv
