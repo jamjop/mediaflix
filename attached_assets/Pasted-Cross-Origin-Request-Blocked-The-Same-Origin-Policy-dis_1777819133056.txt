@@ -1,0 +1,40 @@
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516. (Reason: CORS request did not succeed). Status code: (null).
+None of the “sha512” hashes in the integrity attribute match the content of the subresource at “https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516”. The computed hash is “z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==”. request-access
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://www.noahflix.net/assets/index-YWSvRuIq.js from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” request-access
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516 from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” request-access
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://www.noahflix.net/cdn-cgi/challenge-platform/scripts/jsd/main.js from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” blank line 16 > injectedScript:1:203
+Content-Security-Policy: (Report-Only policy) The page’s settings would block the loading of a resource (connect-src) at https://www.noahflix.net/api/config because it violates the following directive: “connect-src 'none'” index-YWSvRuIq.js:9:79831
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” index-YWSvRuIq.js:9:102315
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://www.noahflix.net/cdn-cgi/challenge-platform/h/g/scripts/jsd/fe6331af5207/main.js? from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” blank
+Content-Security-Policy: (Report-Only policy) The page’s settings would block a script (script-src-elem) at https://challenges.cloudflare.com/turnstile/v0/g/fe6331af5207/api.js from being executed because it violates the following directive: “script-src 'unsafe-inline' 'unsafe-eval'” request-access
+Content-Security-Policy: (Report-Only policy) The page’s settings would block the loading of a resource (connect-src) at https://www.noahflix.net/cdn-cgi/challenge-platform/h/g/jsd/oneshot/fe6331af5207/0.16753639796600828:1777817358:-QaJlKDm3BRHSK9uOvehYYpcw9RE_V4aVE75Nkxvpvk/9f5fdcdbd8d9d539 because it violates the following directive: “connect-src 'none'” main.js:1:19816
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:44620
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:44620
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:44620
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:44659
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:44659
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:44659
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:44913
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:44913
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:44913
+Content-Security-Policy: (Report-Only policy) The page’s settings would block the loading of a resource (connect-src) at https://www.noahflix.net/api/access-request because it violates the following directive: “connect-src 'none'” index-YWSvRuIq.js:9:103287
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:38377
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:38490
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:38490
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:38490
+Feature Policy: Skipping unsupported feature name “cross-origin-isolated”. api.js:1:38566
+Feature Policy: Skipping unsupported feature name “autoplay”. api.js:1:38566
+Feature Policy: Skipping unsupported feature name “keyboard-map”. api.js:1:38566
+Partitioned cookie or storage access was provided to “https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/7y157/0x4AAAAAADIbbeS2UsGeWKfd/dark/fbE/api/normal?lang=auto” because it is loaded in the third-party context and dynamic state partitioning is enabled. normal:1:84947
+Window.fullScreen attribute is deprecated and will be removed in the future. normal:1:30426
+InstallTrigger is deprecated and will be removed in the future. normal:1:30426
+onmozfullscreenchange is deprecated. normal:1:30426
+onmozfullscreenerror is deprecated. normal:1:30426
+WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER. normal:1:92797
+WebGL context was lost. 2 normal:1:92797
+The resource at “https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/cmg/1” preloaded with link preload was not used within a few seconds. Make sure all attributes of the preload tag are set correctly.
