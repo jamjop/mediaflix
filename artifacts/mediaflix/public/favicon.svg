@@ -2,11 +2,40 @@
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#a855f7"/>
-      <stop offset="40%" stop-color="#ec4899"/>
-      <stop offset="70%" stop-color="#f97316"/>
+      <stop offset="45%" stop-color="#ec4899"/>
+      <stop offset="80%" stop-color="#f97316"/>
       <stop offset="100%" stop-color="#eab308"/>
     </linearGradient>
+    <clipPath id="topbar">
+      <rect x="9" y="13" width="46" height="14" rx="3"/>
+    </clipPath>
+    <clipPath id="body">
+      <rect x="9" y="28" width="46" height="24" rx="3"/>
+    </clipPath>
   </defs>
+
+  <!-- Background -->
   <rect width="64" height="64" rx="14" fill="#0a0a0f"/>
-  <text x="32" y="47" font-family="Arial Black, sans-serif" font-size="40" font-weight="900" text-anchor="middle" fill="url(#g)">m</text>
+
+  <!-- Clapperboard body -->
+  <rect x="9" y="28" width="46" height="24" rx="3" fill="#111118"/>
+  <rect x="9" y="28" width="46" height="24" rx="3" fill="none" stroke="url(#g)" stroke-width="2"/>
+
+  <!-- Play triangle -->
+  <polygon points="24,34 24,46 42,40" fill="url(#g)"/>
+
+  <!-- Clapper top bar (gradient fill) -->
+  <rect x="9" y="13" width="46" height="14" rx="3" fill="url(#g)" clip-path="url(#topbar)"/>
+
+  <!-- Diagonal black stripes on top bar -->
+  <g clip-path="url(#topbar)" fill="#0a0a0f" opacity="0.55">
+    <polygon points="14,13 21,13 9,27 9,20"/>
+    <polygon points="25,13 32,13 20,27 13,27"/>
+    <polygon points="36,13 43,13 31,27 24,27"/>
+    <polygon points="47,13 54,13 42,27 35,27"/>
+    <polygon points="55,13 58,13 55,27 46,27"/>
+  </g>
+
+  <!-- Divider line between top bar and body -->
+  <line x1="9" y1="27" x2="55" y2="27" stroke="#0a0a0f" stroke-width="1.5"/>
 </svg>
