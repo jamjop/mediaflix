@@ -41,50 +41,54 @@ export default function RequestAccess() {
   const loadTimeRef = useRef<number>(Date.now());
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
 
   useEffect(() => {
     loadTimeRef.current = Date.now();
   }, []);
 
+  // Effect 1: load the Turnstile script eagerly on mount, regardless of siteKey
   useEffect(() => {
-    if (!siteKey) return;
-
     const scriptId = "cf-turnstile-script";
-
-    const tryRender = () => {
-      if (widgetIdRef.current) return;
-      if (turnstileContainerRef.current && window.turnstile) {
-        widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
-          sitekey: siteKey,
-          theme: "dark",
-          callback: (token) => setTurnstileToken(token),
-          "expired-callback": () => setTurnstileToken(""),
-          "error-callback": () => setTurnstileToken(""),
-        });
-      }
-    };
-
     if (document.getElementById(scriptId)) {
-      // Script already loaded — try to render immediately, then poll briefly
-      tryRender();
-      if (!widgetIdRef.current) {
-        const interval = setInterval(() => {
-          tryRender();
-          if (widgetIdRef.current) clearInterval(interval);
-        }, 100);
-        setTimeout(() => clearInterval(interval), 5000);
+      if (window.turnstile) {
+        setTurnstileScriptReady(true);
+      } else {
+        // Script tag exists but hasn't finished loading yet — wait for it
+        const existing = document.getElementById(scriptId) as HTMLScriptElement;
+        const prev = existing.onload;
+        existing.onload = (e) => {
+          if (typeof prev === "function") prev.call(existing, e);
+          setTurnstileScriptReady(true);
+        };
       }
       return;
     }
-
     const script = document.createElement("script");
     script.id = scriptId;
     script.src =
       "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
     script.async = true;
-    script.defer = true;
-    script.onload = () => tryRender();
+    script.onload = () => setTurnstileScriptReady(true);
+    script.onerror = () => console.error("[Turnstile] Failed to load script — check CSP / network");
     document.head.appendChild(script);
+  }, []);
+
+  // Effect 2: render widget once BOTH the script is ready AND we have a siteKey
+  useEffect(() => {
+    if (!turnstileScriptReady || !siteKey || !turnstileContainerRef.current) return;
+    if (widgetIdRef.current) return;
+
+    widgetIdRef.current = window.turnstile!.render(turnstileContainerRef.current, {
+      sitekey: siteKey,
+      theme: "dark",
+      callback: (token) => setTurnstileToken(token),
+      "expired-callback": () => setTurnstileToken(""),
+      "error-callback": () => {
+        console.error("[Turnstile] Widget error — possible domain mismatch or network issue");
+        setTurnstileToken("");
+      },
+    });
 
     return () => {
       if (widgetIdRef.current && window.turnstile) {
@@ -92,7 +96,7 @@ export default function RequestAccess() {
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey]);
+  }, [turnstileScriptReady, siteKey]);
 
   function validate(): boolean {
     const errors: Record<string, string> = {};
