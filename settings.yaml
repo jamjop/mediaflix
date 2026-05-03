@@ -19,11 +19,11 @@ branding:
 # Use the LAN IP:port of each service. Leave as "" to disable.
 services:
   plex: ""                         # e.g. http://192.168.1.10:32400
-  overseerr: "http://192.168.52.36:5055"
-  tautulli: "http://192.168.52.36:8181/tautulli"
-  radarr: "http://192.168.52.36:8989/radarr"
-  sonarr: "http://192.168.52.36:7878/sonarr"
-  sabnzbd: "http://192.168.52.36:8282"
+  overseerr: "http://127.0.0.1:5055"
+  tautulli: "http://127.0.0.1:8181/tautulli"
+  radarr: "http://127.0.0.1:8989/radarr"
+  sonarr: "http://127.0.0.1:7878/sonarr"
+  sabnzbd: "http://127.0.0.1:8282"
   qbittorrent: ""                  # e.g. http://192.168.1.10:8090
 
 # Public-facing links shown on the quick-access service cards.
