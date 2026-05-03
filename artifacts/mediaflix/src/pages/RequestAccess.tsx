@@ -46,24 +46,34 @@ export default function RequestAccess() {
     loadTimeRef.current = Date.now();
   }, []);
 
-  const renderTurnstile = () => {
-    if (!turnstileContainerRef.current || !siteKey || !window.turnstile) return;
-    if (widgetIdRef.current) return;
-    widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
-      sitekey: siteKey,
-      theme: "dark",
-      callback: (token) => setTurnstileToken(token),
-      "expired-callback": () => setTurnstileToken(""),
-      "error-callback": () => setTurnstileToken(""),
-    });
-  };
-
   useEffect(() => {
     if (!siteKey) return;
 
     const scriptId = "cf-turnstile-script";
+
+    const tryRender = () => {
+      if (widgetIdRef.current) return;
+      if (turnstileContainerRef.current && window.turnstile) {
+        widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+          sitekey: siteKey,
+          theme: "dark",
+          callback: (token) => setTurnstileToken(token),
+          "expired-callback": () => setTurnstileToken(""),
+          "error-callback": () => setTurnstileToken(""),
+        });
+      }
+    };
+
     if (document.getElementById(scriptId)) {
-      renderTurnstile();
+      // Script already loaded — try to render immediately, then poll briefly
+      tryRender();
+      if (!widgetIdRef.current) {
+        const interval = setInterval(() => {
+          tryRender();
+          if (widgetIdRef.current) clearInterval(interval);
+        }, 100);
+        setTimeout(() => clearInterval(interval), 5000);
+      }
       return;
     }
 
@@ -73,7 +83,7 @@ export default function RequestAccess() {
       "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
     script.async = true;
     script.defer = true;
-    script.onload = () => renderTurnstile();
+    script.onload = () => tryRender();
     document.head.appendChild(script);
 
     return () => {
