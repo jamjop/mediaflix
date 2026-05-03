@@ -16,7 +16,7 @@ const TURNSTILE_VERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 const ACCESS_TO_EMAIL =
-  process.env.ACCESS_TO_EMAIL ?? "access@noahflix.net";
+  process.env.ACCESS_TO_EMAIL ?? "capture_garnet1e@icloud.com";
 
 const MIN_SUBMIT_MS = 3000;
 
