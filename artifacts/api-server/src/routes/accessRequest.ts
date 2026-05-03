@@ -90,6 +90,57 @@ function sanitize(s: string, maxLen = 500): string {
   return s.replace(/[<>]/g, "").trim().slice(0, maxLen);
 }
 
+function getPushoverConfig() {
+  return {
+    token: process.env.PUSHOVER_APP_TOKEN ?? "",
+    user: process.env.PUSHOVER_USER_KEY ?? "",
+  };
+}
+
+async function sendPushover(
+  name: string,
+  plexUsername: string,
+  email: string,
+  message: string,
+  log: (typeof logger),
+): Promise<void> {
+  const { token, user } = getPushoverConfig();
+  if (!token || !user) return;
+
+  const body = new URLSearchParams({
+    token,
+    user,
+    title: "🎬 New Access Request",
+    message: [
+      `<b>${name}</b> wants to join noahflix`,
+      `Plex: <b>${plexUsername}</b>`,
+      `Email: ${email}`,
+      message ? `\n${message}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+    html: "1",
+    url: `mailto:${email}?subject=Re%3A%20noahflix%20Access%20Request`,
+    url_title: `Reply to ${name}`,
+    priority: "0",
+    sound: "magic",
+  });
+
+  try {
+    const res = await fetch("https://api.pushover.net/1/messages.json", {
+      method: "POST",
+      body,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    const data = (await res.json()) as { status: number; errors?: string[] };
+    if (data.status !== 1) {
+      log.warn({ errors: data.errors }, "Pushover notification failed");
+    }
+  } catch (err) {
+    log.warn({ err }, "Pushover notification error — email was still sent");
+  }
+}
+
 function loadTurnstiteSiteKey(): string {
   try {
     const raw = readFileSync(SETTINGS_PATH, "utf8");
@@ -290,6 +341,10 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
     });
 
     req.log.info({ ip, plex: safePlex }, "Access request email sent");
+
+    // Fire-and-forget — Pushover failure never blocks the user's response
+    void sendPushover(safeName, safePlex, safeEmail, safeMessage, logger);
+
     res.json({
       success: true,
       message: "Your request has been sent! You'll hear back soon.",
