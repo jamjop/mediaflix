@@ -222,22 +222,27 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
     return;
   }
 
-  if (typeof turnstile_token !== "string" || !turnstile_token) {
-    res.status(400).json({
-      success: false,
-      message: "Please complete the security check.",
-    });
-    return;
-  }
+  // Turnstile CAPTCHA — only enforced when a site key is configured
+  const captchaSiteKey = loadTurnstiteSiteKey();
+  if (captchaSiteKey) {
+    if (typeof turnstile_token !== "string" || !turnstile_token) {
+      res.status(400).json({
+        success: false,
+        message: "Please complete the security check.",
+      });
+      return;
+    }
 
-  // Turnstile CAPTCHA verification
-  const captchaOk = await verifyTurnstile(turnstile_token, ip);
-  if (!captchaOk) {
-    res.status(400).json({
-      success: false,
-      message: "Security check failed. Please refresh the page and try again.",
-    });
-    return;
+    const captchaOk = await verifyTurnstile(turnstile_token as string, ip);
+    if (!captchaOk) {
+      res.status(400).json({
+        success: false,
+        message: "Security check failed. Please refresh the page and try again.",
+      });
+      return;
+    }
+  } else {
+    req.log.warn({ ip }, "Turnstile site_key not configured — skipping CAPTCHA check");
   }
 
   // Sanitize
