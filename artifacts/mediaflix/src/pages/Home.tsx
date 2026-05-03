@@ -119,7 +119,7 @@ export default function Home() {
 
   const useGradient = background?.style === "gradient";
 
-  const siteName = branding?.name ?? "mediaflix";
+  const siteName = branding?.name ?? "NoahFlix";
   const gradientPart = siteName.slice(0, Math.ceil(siteName.length / 2));
   const plainPart = siteName.slice(Math.ceil(siteName.length / 2));
 
