@@ -9,7 +9,7 @@ background:
 
 branding:
   # The brand name displayed as the main logo (gradient part + plain part)
-  name: "mediaflix"
+  name: "NoahFlix"
   # Subtitle shown below the logo
   tagline: "Your personal streaming universe — all your media services, stats, and downloads in one beautiful dashboard."
   # Accent color for the gradient logo (not currently used, kept for future theming)
