@@ -1,0 +1,77 @@
+# MediaFlix Site Configuration
+# Copy this file to settings.yaml and fill in your values.
+# The API server reads settings.yaml live on every request — no restart needed.
+
+# Background style for the main page
+# style options: posters | gradient
+background:
+  style: "posters"
+
+branding:
+  # The brand name displayed as the main logo
+  name: "MyFlix"
+  # Subtitle shown below the logo
+  tagline: "Your personal streaming universe — all your media services, stats, and downloads in one beautiful dashboard."
+  # Accent color for the gradient logo (not currently used, kept for future theming)
+  accent_color: "#a855f7"
+
+# Internal service URLs — used by the server for API proxying and health checks.
+# Use the LAN IP:port of each service. Leave as "" to disable.
+services:
+  plex: ""                         # e.g. http://192.168.1.10:32400
+  overseerr: "http://127.0.0.1:5055"
+  tautulli: "http://127.0.0.1:8181/tautulli"
+  radarr: "http://127.0.0.1:7878/radarr"
+  sonarr: "http://127.0.0.1:8989/sonarr"
+  sabnzbd: "http://127.0.0.1:8282"
+  qbittorrent: ""                  # e.g. http://192.168.1.10:8090
+
+# Public-facing links shown on the quick-access service cards.
+# Use reverse-proxy paths (e.g. /sonarr) or full URLs for external services.
+# Falls back to the internal services URL above if left empty.
+links:
+  plex: "https://app.plex.tv"
+  overseerr: "https://requests.yourdomain.com"
+  tautulli: "/tautulli"
+  radarr: "/radarr"
+  sonarr: "/sonarr"
+  sabnzbd: "/sabnzbd"
+  qbittorrent: "/qbittorrent"
+
+# Tautulli integration — used to show live "Now Watching" data.
+# The API key is kept server-side and never exposed to the browser.
+tautulli:
+  api_key: "your_tautulli_api_key_here"
+
+# Overseerr/Jellyseerr integration — used to show recent media requests.
+# The API key is kept server-side and never exposed to the browser.
+overseerr:
+  api_key: "your_overseerr_api_key_here"
+
+# SABnzbd integration — used to show live download queue data.
+# The API key is kept server-side and never exposed to the browser.
+sabnzbd:
+  api_key: "your_sabnzbd_api_key_here"
+
+# TMDB integration — used to fetch movie posters for the background.
+# Free API key from https://www.themoviedb.org/settings/api
+# source options: now_playing | popular | top_rated | upcoming
+tmdb:
+  api_key: "your_tmdb_api_key_here"
+  source: "now_playing"
+
+# Access buttons shown in the hero section
+access:
+  # "Request Media" button — typically points to Overseerr
+  request_url: "https://requests.yourdomain.com"
+  request_label: "Request Media"
+  # "Request Access" button — links to the built-in request form
+  access_url: "/request-access"
+  access_label: "Request Access"
+
+# Cloudflare Turnstile — CAPTCHA protection for the access request form.
+# Get a free site key + secret key at: https://dash.cloudflare.com/?to=/:account/turnstile
+# The site_key is public (used in the browser). The secret_key goes in .env as TURNSTILE_SECRET_KEY.
+# Leave site_key empty to disable CAPTCHA verification.
+turnstile:
+  site_key: ""
