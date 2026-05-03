@@ -1,0 +1,46 @@
+
+Browser Console Mode
+Parent process only(Fast)
+Multiprocess(Slower)
+1777817359623	addons.xpi	WARN	Checking /Applications/Firefox.app/Contents/Resources/distribution/extensions for addons
+1777817359917	addons.webextension.{74b0af75-8791-44e2-95a6-7f0ab94143ec}	WARN	Loading extension '{74b0af75-8791-44e2-95a6-7f0ab94143ec}': Reading manifest: Warning processing version: version must be a version string consisting of at most 4 integers of at most 9 digits without leading zeros, and separated with dots
+Window.fullScreen attribute is deprecated and will be removed in the future. browser-customtitlebar.js:68:7
+NewTabGleanUtils: Failed to complete registration of metrics and pings found in runtime metrics JSON: TypeError: NetworkError when attempting to fetch resource. NewTabGleanUtils.sys.mjs:116:23
+storage-json: DEPRECATED: LoginManagerStorage_json.searchLogin() is deprecated. Use searchLoginAsync(). Will be removed in Bug 2022270. storage-json.sys.mjs:600:17
+Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout RemoteSettingsExperimentLoader.sys.mjs:1217:21
+    _validateBranches resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1217
+    checkRecipe resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1118
+In add-on {d634138d-c276-4fc8-924b-40a0ea21d284}, attempting to use listener "notifications.onButtonClicked", which is unimplemented. ExtensionParent.sys.mjs:1330:13
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+URLBar - MerinoClient [SuggestBackendMerino]: Fetch error NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannel.responseStatus]
+    onStopRequest resource://gre/modules/ObliviousHTTP.sys.mjs:189
+MerinoClient.sys.mjs:342:31
+    fetch moz-src:///browser/components/urlbar/MerinoClient.sys.mjs:342
+SyntaxError: JSON.parse: expected double-quoted property name at line 1 column 153 of the JSON data
+Referrer Policy: Ignoring the less restricted referrer policy “unsafe-url” for the cross-site request: https://www.youtube.com/embed/?enablejsapi=1&rel=0&autoplay=0&playsinline=1&fs=1&hl=en&embed_config=%7B%22enc%22%3A%22AXH1ezkqbIYyXjOPZyZqWh8ZsxT1g_EeWVymM2yp347vbjZ-fjFPT-KWpyKIdYIQxj1DK66BjBv7ctE5PBmJaUZQRWiYQa1uCkHPdlsXt8w57k94nML5Zsdj2noZZTJjWBxy_PE1s2ZoYEslwZidNbRcjNsWa0lrUJfZb-FmLiODyC77mm5lvTr9jPUmr0GbVumwke6LWH-Oq5pwJWzzBI8ZA3fCVGTc5Pyo0C2aOO62sCy0HfSie1mFvNpD0n0peOiRZjzqAH1RKoAIiUOTbXpwWoqjSmrLJfMw4EujofGG6eTf9Uov_NyH9QPbdiaVtfJ3atBPiM4%3D%22%7D embed
+SyntaxError: JSON.parse: expected double-quoted property name at line 1 column 153 of the JSON data 2
+Referrer Policy: Ignoring the less restricted referrer policy “unsafe-url” for the cross-site request: https://www.youtube.com/embed/?enablejsapi=1&rel=0&autoplay=0&playsinline=1&fs=1&hl=en&embed_config=%7B%22enc%22%3A%22AXH1ezmr0oLbAReE6tgaotlPwBrqFuW11SAXAA8gmDh89k4dbRHXdmS591aOSH4aged9JwfqbaJgzzCpF_wibLoUr-C5Rfz2lZ5-bMLvz090eBkuvxT43gV5nhs0hk01pwesfLN2nIkVavkeAC9P_uUzkcg7OWkih8Tpvacoez-8Hzv6XwhLosNergHbWzyTN1MWO3Hd0VXlQ_L6ChP3XNo4pTtNELaJnbReBtTu6HoL0cmvxC_AuazKJIFunxWx-0c6zD7npL1vr3Jv30sVlu8Cx1qr6AwWdh587eh0pAYp4xKRo4w3ZmdsK7z0hynWlvwikJKE2A0%3D%22%7D embed
+Empty string passed to getElementById(). 1945 index.html
