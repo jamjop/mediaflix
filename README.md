@@ -120,6 +120,20 @@ LOG_LEVEL=info
 
 > **Note:** API keys for Tautulli, SABnzbd, Overseerr, and TMDB belong in `settings.yaml`, not here. They are read live on every request — no restart needed when rotating them.
 
+### Securing config files
+
+Both `settings.yaml` and `.env` are plaintext files containing secrets. Once created on the server, restrict their permissions so only the API process can read them:
+
+```bash
+sudo chown root:www-data /opt/mediaflix/settings.yaml
+sudo chmod 640 /opt/mediaflix/settings.yaml
+
+sudo chown root:www-data /opt/mediaflix/.env
+sudo chmod 640 /opt/mediaflix/.env
+```
+
+This makes both files readable by the `www-data` user (which runs the API) but not by other users on the system. Your SSH/server access controls are the outer security boundary.
+
 ---
 
 ## 4. Build both apps
