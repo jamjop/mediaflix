@@ -102,20 +102,23 @@ See `settings.yaml.example` for the full reference.
 
 ### .env
 
-Used for secrets that require a service restart to take effect. See `.env.example` for all available variables:
+Used for process-level secrets only — these require `sudo systemctl restart mediaflix-api` to take effect. See `.env.example` for all available variables:
 
 ```env
-SESSION_SECRET=a_long_random_string
+TURNSTILE_SECRET_KEY=your_turnstile_secret_key
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
+SMTP_SECURE=false
 SMTP_USER=you@gmail.com
 SMTP_PASS=your_app_password
-NOTIFY_EMAIL=notify@yourdomain.com
-PUSHOVER_USER_KEY=your_pushover_user_key
+SMTP_FROM="MediaFlix <noreply@yourdomain.com>"
+ACCESS_TO_EMAIL=you@yourdomain.com
 PUSHOVER_APP_TOKEN=your_pushover_app_token
-TURNSTILE_SECRET_KEY=your_turnstile_secret_key
+PUSHOVER_USER_KEY=your_pushover_user_key
 LOG_LEVEL=info
 ```
+
+> **Note:** API keys for Tautulli, SABnzbd, Overseerr, and TMDB belong in `settings.yaml`, not here. They are read live on every request — no restart needed when rotating them.
 
 ---
 
