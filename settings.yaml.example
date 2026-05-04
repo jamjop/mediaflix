@@ -58,7 +58,7 @@ sabnzbd:
 # source options: now_playing | popular | top_rated | upcoming
 tmdb:
   api_key: "your_tmdb_api_key_here"
-  source: "now_playing"
+  source: "now_playing"    # now_playing | popular | top_rated | upcoming
 
 # Access buttons shown in the hero section
 access:
