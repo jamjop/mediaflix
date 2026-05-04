@@ -134,8 +134,8 @@ pnpm --filter @workspace/mediaflix run build
 ## 5. Deploy the frontend
 
 ```bash
-sudo mkdir -p /var/www/noahflix.net
-sudo cp -r /opt/mediaflix/artifacts/mediaflix/dist/public/. /var/www/noahflix.net/
+sudo mkdir -p /var/www/yourdomain.com
+sudo cp -r /opt/mediaflix/artifacts/mediaflix/dist/public/. /var/www/yourdomain.com/
 ```
 
 ---
@@ -243,7 +243,7 @@ git pull
 pnpm install
 pnpm --filter @workspace/api-server run build
 pnpm --filter @workspace/mediaflix run build
-sudo cp -r artifacts/mediaflix/dist/public/. /var/www/noahflix.net/
+sudo cp -r artifacts/mediaflix/dist/public/. /var/www/yourdomain.com/
 sudo systemctl restart mediaflix-api
 ```
 
