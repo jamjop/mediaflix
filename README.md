@@ -57,19 +57,19 @@ background:
   style: "posters"        # "posters" = rotating TMDB backdrops | "gradient" = dark purple/pink
 
 branding:
-  name: "NoahFlix"
+  name: "MediaFlix"
   tagline: "Your personal streaming universe — all your media services, stats, and downloads in one beautiful dashboard."
   accent_color: "#a855f7"
 
 # Internal service URLs — used for API proxying and health checks
 services:
-  plex: ""                         # e.g. http://192.168.1.10:32400
+  plex: "https://127.0.0.1:32400"
   overseerr: "http://127.0.0.1:5055"
   tautulli: "http://127.0.0.1:8181/tautulli"
   radarr: "http://127.0.0.1:7878/radarr"
   sonarr: "http://127.0.0.1:8989/sonarr"
   sabnzbd: "http://127.0.0.1:8282"
-  qbittorrent: ""
+  qbittorrent: "http://127.0.0.1:9091"
 
 # Public-facing links shown on the quick-access service cards
 links:
@@ -95,7 +95,7 @@ tmdb:
 # Cloudflare Turnstile CAPTCHA — leave site_key blank to disable
 # Secret key goes in .env as TURNSTILE_SECRET_KEY
 turnstile:
-  site_key: ""
+  site_key: "your_cloudflare_turnstile_site_key"
 ```
 
 See `settings.yaml.example` for the full reference.

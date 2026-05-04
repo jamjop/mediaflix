@@ -9,7 +9,7 @@ background:
 
 branding:
   # The brand name displayed as the main logo
-  name: "MyFlix"
+  name: "MediaFlix"
   # Subtitle shown below the logo
   tagline: "Your personal streaming universe — all your media services, stats, and downloads in one beautiful dashboard."
   # Accent color for the gradient logo (not currently used, kept for future theming)
@@ -18,13 +18,13 @@ branding:
 # Internal service URLs — used by the server for API proxying and health checks.
 # Use the LAN IP:port of each service. Leave as "" to disable.
 services:
-  plex: ""                         # e.g. http://192.168.1.10:32400
+  plex: "https://127.0.0.1:32400"
   overseerr: "http://127.0.0.1:5055"
   tautulli: "http://127.0.0.1:8181/tautulli"
   radarr: "http://127.0.0.1:7878/radarr"
   sonarr: "http://127.0.0.1:8989/sonarr"
   sabnzbd: "http://127.0.0.1:8282"
-  qbittorrent: ""                  # e.g. http://192.168.1.10:8090
+  qbittorrent: "http://127.0.0.1:9091"
 
 # Public-facing links shown on the quick-access service cards.
 # Use reverse-proxy paths (e.g. /sonarr) or full URLs for external services.
@@ -74,4 +74,4 @@ access:
 # The site_key is public (used in the browser). The secret_key goes in .env as TURNSTILE_SECRET_KEY.
 # Leave site_key empty to disable CAPTCHA verification.
 turnstile:
-  site_key: ""
+  site_key: "your_cloudflare_turnstile_site_key"
