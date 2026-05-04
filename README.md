@@ -63,7 +63,7 @@ branding:
 
 # Internal service URLs — used for API proxying and health checks
 services:
-  plex: "https://127.0.0.1:32400"
+  plex: "http://127.0.0.1:32400"
   overseerr: "http://127.0.0.1:5055"
   tautulli: "http://127.0.0.1:8181/tautulli"
   radarr: "http://127.0.0.1:7878/radarr"
