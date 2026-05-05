@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine } from "lucide-react";
-import { useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters } from "@workspace/api-client-react";
+import {
+  useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters,
+  getGetPostersQueryKey, getGetActivityQueryKey, getGetDownloadsQueryKey, getGetRequestsQueryKey, getGetServiceStatusQueryKey,
+} from "@workspace/api-client-react";
 
 const FALLBACK_POSTERS = [
   "https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
@@ -84,11 +87,11 @@ export default function Home() {
   const [fading, setFading] = useState(false);
 
   const { data: config, isLoading } = useGetConfig();
-  const { data: postersData } = useGetPosters({ query: { staleTime: 6 * 60 * 60 * 1000 } });
-  const { data: activity } = useGetActivity({ query: { refetchInterval: 30_000 } });
-  const { data: downloads } = useGetDownloads({ query: { refetchInterval: 30_000 } });
-  const { data: requestsData } = useGetRequests({ query: { refetchInterval: 60_000 } });
-  const { data: serviceStatus } = useGetServiceStatus({ query: { refetchInterval: 30_000 } });
+  const { data: postersData } = useGetPosters({ query: { queryKey: getGetPostersQueryKey(), staleTime: 6 * 60 * 60 * 1000 } });
+  const { data: activity } = useGetActivity({ query: { queryKey: getGetActivityQueryKey(), refetchInterval: 30_000 } });
+  const { data: downloads } = useGetDownloads({ query: { queryKey: getGetDownloadsQueryKey(), refetchInterval: 30_000 } });
+  const { data: requestsData } = useGetRequests({ query: { queryKey: getGetRequestsQueryKey(), refetchInterval: 60_000 } });
+  const { data: serviceStatus } = useGetServiceStatus({ query: { queryKey: getGetServiceStatusQueryKey(), refetchInterval: 30_000 } });
 
   const moviePosters = postersData?.posters?.length ? postersData.posters : FALLBACK_POSTERS;
 
@@ -540,6 +543,7 @@ type DownloadSlot = {
   status: string;
   timeleft: string;
   cat: string;
+  source: string;
 };
 
 type DownloadsData = {
@@ -551,6 +555,7 @@ type DownloadsData = {
   noofslots: number;
   slots: DownloadSlot[];
   configured: boolean;
+  qbt_configured: boolean;
 };
 
 function DownloadsCard({
@@ -607,22 +612,33 @@ function DownloadsCard({
       {/* Slot list */}
       {slots.length > 0 ? (
         <div className="space-y-3">
-          {slots.slice(0, 4).map((slot, i) => {
+          {slots.slice(0, 5).map((slot, i) => {
             const pct = parseFloat(slot.percentage) || 0;
             const isActive = slot.status === "Downloading";
+            const isQbt = slot.source === "qbittorrent";
+            const barColor = isQbt
+              ? "bg-gradient-to-r from-green-400 to-emerald-400"
+              : "bg-gradient-to-r from-blue-400 to-cyan-400";
             return (
               <div key={i}>
                 <div className="flex items-center justify-between mb-1 gap-2">
                   <span className="text-white/80 text-xs font-medium truncate">{slot.filename}</span>
-                  <span className={`text-xs px-1.5 py-0.5 rounded-md flex-shrink-0 font-medium ${
-                    isActive ? "bg-blue-500/20 text-blue-400" : "bg-yellow-500/20 text-yellow-400"
-                  }`}>
-                    {slot.status}
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className={`text-[10px] px-1 py-0.5 rounded font-semibold uppercase tracking-wide ${
+                      isQbt ? "bg-emerald-500/20 text-emerald-400" : "bg-blue-500/20 text-blue-400"
+                    }`}>
+                      {isQbt ? "QBT" : "SAB"}
+                    </span>
+                    <span className={`text-xs px-1.5 py-0.5 rounded-md font-medium ${
+                      isActive ? "bg-blue-500/20 text-blue-400" : "bg-yellow-500/20 text-yellow-400"
+                    }`}>
+                      {slot.status}
+                    </span>
+                  </div>
                 </div>
                 <div className="h-1 bg-white/10 rounded-full overflow-hidden mb-1">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-700"
+                    className={`h-full rounded-full ${barColor} transition-all duration-700`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -633,22 +649,22 @@ function DownloadsCard({
               </div>
             );
           })}
-          {slots.length > 4 && (
-            <p className="text-white/30 text-xs text-center pt-1">+{slots.length - 4} more in queue</p>
+          {slots.length > 5 && (
+            <p className="text-white/30 text-xs text-center pt-1">+{slots.length - 5} more in queue</p>
           )}
         </div>
       ) : (
         <div className="py-10 text-center">
-          <p className="text-white/30 text-sm">{!configured ? "Configure SABnzbd to see live downloads." : "Queue is empty."}</p>
+          <p className="text-white/30 text-sm">{!configured ? "Configure SABnzbd or qBittorrent to see live downloads." : "Queue is empty."}</p>
           {(qbittorrentUrl || sabnzbdUrl) && (
             <div className="flex items-center justify-center gap-3 mt-2">
               {qbittorrentUrl && (
-                <a href={qbittorrentUrl} className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
+                <a href={qbittorrentUrl} className="text-xs text-emerald-400/70 hover:text-emerald-400 transition-colors">
                   qBittorrent →
                 </a>
               )}
               {sabnzbdUrl && (
-                <a href={sabnzbdUrl}  className="text-xs text-green-400/70 hover:text-green-400 transition-colors">
+                <a href={sabnzbdUrl} className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors">
                   SABnzbd →
                 </a>
               )}

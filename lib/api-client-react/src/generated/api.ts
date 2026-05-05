@@ -484,8 +484,8 @@ export function useGetRequests<
 }
 
 /**
- * Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
- * @summary Get live SABnzbd download queue
+ * Aggregates active downloads from SABnzbd and qBittorrent. Returns empty queue if neither is configured.
+ * @summary Get live download queue
  */
 export const getGetDownloadsUrl = () => {
   return `/api/downloads`;
@@ -536,7 +536,7 @@ export type GetDownloadsQueryResult = NonNullable<
 export type GetDownloadsQueryError = ErrorType<unknown>;
 
 /**
- * @summary Get live SABnzbd download queue
+ * @summary Get live download queue
  */
 
 export function useGetDownloads<

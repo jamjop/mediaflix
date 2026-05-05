@@ -149,8 +149,8 @@ export const GetRequestsResponse = zod.object({
 });
 
 /**
- * Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
- * @summary Get live SABnzbd download queue
+ * Aggregates active downloads from SABnzbd and qBittorrent. Returns empty queue if neither is configured.
+ * @summary Get live download queue
  */
 export const GetDownloadsResponse = zod.object({
   speed: zod.string(),
@@ -168,9 +168,11 @@ export const GetDownloadsResponse = zod.object({
       status: zod.string(),
       timeleft: zod.string(),
       cat: zod.string(),
+      source: zod.string(),
     }),
   ),
   configured: zod.boolean(),
+  qbt_configured: zod.boolean(),
 });
 
 /**

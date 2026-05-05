@@ -16,4 +16,5 @@ export interface DownloadsData {
   noofslots: number;
   slots: DownloadSlot[];
   configured: boolean;
+  qbt_configured: boolean;
 }

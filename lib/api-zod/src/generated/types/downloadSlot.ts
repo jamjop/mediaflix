@@ -14,4 +14,5 @@ export interface DownloadSlot {
   status: string;
   timeleft: string;
   cat: string;
+  source: string;
 }

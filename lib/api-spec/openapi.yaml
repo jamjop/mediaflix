@@ -105,8 +105,8 @@ paths:
     get:
       operationId: getDownloads
       tags: [downloads]
-      summary: Get live SABnzbd download queue
-      description: Proxies SABnzbd queue data server-side. Returns empty queue if SABnzbd is not configured.
+      summary: Get live download queue
+      description: Aggregates active downloads from SABnzbd and qBittorrent. Returns empty queue if neither is configured.
       responses:
         "200":
           description: Current download queue
@@ -414,6 +414,8 @@ components:
           type: string
         cat:
           type: string
+        source:
+          type: string
       required:
         - filename
         - percentage
@@ -422,6 +424,7 @@ components:
         - status
         - timeleft
         - cat
+        - source
     DownloadsData:
       type: object
       properties:
@@ -443,6 +446,8 @@ components:
             $ref: "#/components/schemas/DownloadSlot"
         configured:
           type: boolean
+        qbt_configured:
+          type: boolean
       required:
         - speed
         - kbpersec
@@ -452,6 +457,7 @@ components:
         - noofslots
         - slots
         - configured
+        - qbt_configured
     AccessRequestBody:
       type: object
       properties:

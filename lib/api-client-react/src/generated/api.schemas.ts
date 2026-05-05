@@ -118,6 +118,7 @@ export interface DownloadSlot {
   status: string;
   timeleft: string;
   cat: string;
+  source: string;
 }
 
 export interface DownloadsData {
@@ -129,6 +130,7 @@ export interface DownloadsData {
   noofslots: number;
   slots: DownloadSlot[];
   configured: boolean;
+  qbt_configured: boolean;
 }
 
 export interface AccessRequestBody {

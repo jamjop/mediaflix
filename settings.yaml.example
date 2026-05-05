@@ -24,7 +24,13 @@ services:
   radarr: "http://127.0.0.1:7878/radarr"
   sonarr: "http://127.0.0.1:8989/sonarr"
   sabnzbd: "http://127.0.0.1:8282"
-  qbittorrent: "http://127.0.0.1:9091"
+  qbittorrent: "http://127.0.0.1:9091"    # used for the downloads widget API
+
+# qBittorrent credentials — required for the downloads widget (API access needs a session).
+# Leave blank if you have configured qBittorrent to bypass auth for localhost connections.
+qbittorrent:
+  username: "admin"
+  password: "your_qbittorrent_password"
 
 # Public-facing links shown on the quick-access service cards.
 # Use reverse-proxy paths (e.g. /sonarr) or full URLs for external services.
