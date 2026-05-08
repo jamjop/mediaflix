@@ -105,6 +105,7 @@ router.get("/metrics", requireAuth, async (_req, res): Promise<void> => {
         iface: primaryIface,
       },
       uptime_seconds: Math.floor(os.uptime()),
+      hostname: os.hostname(),
       gpus,
     });
 

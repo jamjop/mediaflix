@@ -237,6 +237,7 @@ export const GetServerMetricsResponse = zod.object({
     iface: zod.string(),
   }),
   uptime_seconds: zod.number(),
+  hostname: zod.string(),
   gpus: zod.array(
     zod.object({
       vendor: zod.string(),

@@ -17,5 +17,6 @@ export interface ServerMetrics {
   disks: DiskMetric[];
   network: NetworkMetrics;
   uptime_seconds: number;
+  hostname: string;
   gpus: GpuMetric[];
 }

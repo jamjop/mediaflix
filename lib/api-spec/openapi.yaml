@@ -637,6 +637,8 @@ components:
           $ref: "#/components/schemas/NetworkMetrics"
         uptime_seconds:
           type: integer
+        hostname:
+          type: string
         gpus:
           type: array
           items:
@@ -647,6 +649,7 @@ components:
         - disks
         - network
         - uptime_seconds
+        - hostname
         - gpus
     AuthStatus:
       type: object

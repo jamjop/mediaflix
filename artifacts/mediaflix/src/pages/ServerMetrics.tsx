@@ -182,7 +182,7 @@ export default function ServerMetrics() {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-white mb-1">Server</h1>
+        <h1 className="text-2xl font-bold text-white mb-1">{metrics?.hostname ?? "Server"}</h1>
         <p className="text-white/40 text-sm mb-8">Live system metrics — refreshes every 5 seconds</p>
 
         {isLoading && (
