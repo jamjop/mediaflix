@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut, Zap } from "lucide-react";
-import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey, useGetAuthMe, getGetAuthMeQueryKey, useAuthLogout } from "@workspace/api-client-react";
+import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut, Zap, Play } from "lucide-react";
+import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey, useGetAuthMe, getGetAuthMeQueryKey, useAuthLogout, useGetActivity, getGetActivityQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 // ── Formatters ────────────────────────────────────────────────
@@ -40,7 +40,7 @@ function tempColor(c: number): string {
 
 // ── Sub-components ────────────────────────────────────────────
 
-function StatCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function StatCard({ icon, title, children }: { icon: React.ReactNode; title: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-sm p-6">
       <div className="flex items-center gap-2 mb-5">
@@ -118,6 +118,13 @@ export default function ServerMetrics() {
   });
 
   const { data: config } = useGetConfig();
+  const { data: activity } = useGetActivity({
+    query: {
+      queryKey: getGetActivityQueryKey(),
+      refetchInterval: 15_000,
+      enabled: authStatus?.authenticated === true,
+    },
+  });
   const { data: metrics, isLoading, dataUpdatedAt } = useGetServerMetrics({
     query: {
       queryKey: getGetServerMetricsQueryKey(),
@@ -356,7 +363,78 @@ export default function ServerMetrics() {
               </StatCard>
             )}
 
-            {/* Row 4: Network + Uptime */}
+            {/* Row 4: Now Playing */}
+            <StatCard icon={<Play className="w-4 h-4" />} title={
+              <span className="flex items-center gap-2">
+                Now Playing
+                {activity && activity.stream_count > 0 && (
+                  <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-normal normal-case tracking-normal">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    {activity.stream_count} stream{activity.stream_count !== 1 ? "s" : ""}
+                  </span>
+                )}
+              </span>
+            }>
+              {!activity?.configured ? (
+                <p className="text-white/25 text-sm">Configure Tautulli in settings.yaml to see live streams.</p>
+              ) : activity.sessions.length === 0 ? (
+                <p className="text-white/25 text-sm">Nothing streaming right now.</p>
+              ) : (
+                <div className="space-y-5">
+                  {activity.sessions.map((s, i) => {
+                    const pct = Math.min(100, Math.max(0, parseFloat(s.progress_percent) || 0));
+                    const isMovie = s.media_type === "movie";
+                    const primaryTitle = isMovie
+                      ? s.title
+                      : s.grandparent_title || s.title;
+                    const secondaryTitle = isMovie
+                      ? null
+                      : s.parent_title
+                        ? `${s.parent_title} — ${s.title}`
+                        : s.title;
+                    const stateColor =
+                      s.state === "playing"
+                        ? "bg-emerald-400"
+                        : s.state === "paused"
+                        ? "bg-amber-400"
+                        : "bg-blue-400";
+                    const statePulse = s.state === "playing" || s.state === "buffering";
+                    return (
+                      <div key={i} className={i < activity.sessions.length - 1 ? "pb-5 border-b border-white/[0.05]" : ""}>
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div className="min-w-0">
+                            <div className="text-white/80 text-sm font-medium truncate">{primaryTitle}</div>
+                            {secondaryTitle && (
+                              <div className="text-white/40 text-xs truncate mt-0.5">{secondaryTitle}</div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <span className={`w-1.5 h-1.5 rounded-full ${stateColor} ${statePulse ? "animate-pulse" : ""}`} />
+                            <span className="text-white/40 text-xs capitalize">{s.state}</span>
+                          </div>
+                        </div>
+                        {/* Progress bar */}
+                        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-2">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-purple-400 transition-all duration-700"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-white/30">
+                          <span>{s.user}</span>
+                          <div className="flex items-center gap-3">
+                            {s.player && <span className="font-mono">{s.player}</span>}
+                            <span>{pct.toFixed(0)}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </StatCard>
+
+            {/* Row 5: Network + Uptime */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Network */}
               <StatCard icon={<Network className="w-4 h-4" />} title="Network">
