@@ -20,7 +20,8 @@
     "js-yaml": "^4.1.1",
     "nodemailer": "^8.0.7",
     "pino": "^9",
-    "pino-http": "^10"
+    "pino-http": "^10",
+    "systeminformation": "^5.31.6"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",

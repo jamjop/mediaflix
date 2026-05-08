@@ -133,6 +133,45 @@ export interface DownloadsData {
   qbt_configured: boolean;
 }
 
+export interface CpuMetrics {
+  usage_percent: number;
+  temp_celsius?: number | null;
+  cores: number;
+  brand: string;
+  load_1m: number;
+  load_5m: number;
+  load_15m: number;
+}
+
+export interface MemoryMetrics {
+  total_bytes: number;
+  used_bytes: number;
+  free_bytes: number;
+  usage_percent: number;
+}
+
+export interface DiskMetric {
+  fs: string;
+  mount: string;
+  size_bytes: number;
+  used_bytes: number;
+  use_percent: number;
+}
+
+export interface NetworkMetrics {
+  rx_bytes_per_sec: number;
+  tx_bytes_per_sec: number;
+  iface: string;
+}
+
+export interface ServerMetrics {
+  cpu: CpuMetrics;
+  memory: MemoryMetrics;
+  disks: DiskMetric[];
+  network: NetworkMetrics;
+  uptime_seconds: number;
+}
+
 export interface AccessRequestBody {
   name: string;
   plex_username: string;

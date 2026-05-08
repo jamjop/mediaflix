@@ -25,6 +25,7 @@ import type {
   HealthStatus,
   PostersData,
   RequestsData,
+  ServerMetrics,
   SiteConfig,
 } from "./api.schemas";
 
@@ -551,6 +552,82 @@ export function useGetDownloads<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDownloadsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns live CPU, memory, disk, network, and uptime metrics for the host machine.
+ * @summary Get server system metrics
+ */
+export const getGetServerMetricsUrl = () => {
+  return `/api/metrics`;
+};
+
+export const getServerMetrics = async (
+  options?: RequestInit,
+): Promise<ServerMetrics> => {
+  return customFetch<ServerMetrics>(getGetServerMetricsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetServerMetricsQueryKey = () => {
+  return [`/api/metrics`] as const;
+};
+
+export const getGetServerMetricsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getServerMetrics>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getServerMetrics>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetServerMetricsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getServerMetrics>>
+  > = ({ signal }) => getServerMetrics({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getServerMetrics>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetServerMetricsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getServerMetrics>>
+>;
+export type GetServerMetricsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get server system metrics
+ */
+
+export function useGetServerMetrics<
+  TData = Awaited<ReturnType<typeof getServerMetrics>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getServerMetrics>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetServerMetricsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

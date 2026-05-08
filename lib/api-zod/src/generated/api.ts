@@ -176,6 +176,43 @@ export const GetDownloadsResponse = zod.object({
 });
 
 /**
+ * Returns live CPU, memory, disk, network, and uptime metrics for the host machine.
+ * @summary Get server system metrics
+ */
+export const GetServerMetricsResponse = zod.object({
+  cpu: zod.object({
+    usage_percent: zod.number(),
+    temp_celsius: zod.number().nullish(),
+    cores: zod.number(),
+    brand: zod.string(),
+    load_1m: zod.number(),
+    load_5m: zod.number(),
+    load_15m: zod.number(),
+  }),
+  memory: zod.object({
+    total_bytes: zod.number(),
+    used_bytes: zod.number(),
+    free_bytes: zod.number(),
+    usage_percent: zod.number(),
+  }),
+  disks: zod.array(
+    zod.object({
+      fs: zod.string(),
+      mount: zod.string(),
+      size_bytes: zod.number(),
+      used_bytes: zod.number(),
+      use_percent: zod.number(),
+    }),
+  ),
+  network: zod.object({
+    rx_bytes_per_sec: zod.number(),
+    tx_bytes_per_sec: zod.number(),
+    iface: zod.string(),
+  }),
+  uptime_seconds: zod.number(),
+});
+
+/**
  * Validates CAPTCHA, rate-limits, checks honeypot, and sends an email to the admin with the requester's Plex username.
  * @summary Submit a server access request
  */

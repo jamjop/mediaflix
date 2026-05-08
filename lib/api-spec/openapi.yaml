@@ -114,6 +114,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DownloadsData"
+  /metrics:
+    get:
+      operationId: getServerMetrics
+      tags: [metrics]
+      summary: Get server system metrics
+      description: Returns live CPU, memory, disk, network, and uptime metrics for the host machine.
+      responses:
+        "200":
+          description: Server metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerMetrics"
   /access-request:
     post:
       operationId: submitAccessRequest
@@ -458,6 +471,100 @@ components:
         - slots
         - configured
         - qbt_configured
+    CpuMetrics:
+      type: object
+      properties:
+        usage_percent:
+          type: number
+        temp_celsius:
+          type: number
+          nullable: true
+        cores:
+          type: integer
+        brand:
+          type: string
+        load_1m:
+          type: number
+        load_5m:
+          type: number
+        load_15m:
+          type: number
+      required:
+        - usage_percent
+        - cores
+        - brand
+        - load_1m
+        - load_5m
+        - load_15m
+    MemoryMetrics:
+      type: object
+      properties:
+        total_bytes:
+          type: integer
+        used_bytes:
+          type: integer
+        free_bytes:
+          type: integer
+        usage_percent:
+          type: number
+      required:
+        - total_bytes
+        - used_bytes
+        - free_bytes
+        - usage_percent
+    DiskMetric:
+      type: object
+      properties:
+        fs:
+          type: string
+        mount:
+          type: string
+        size_bytes:
+          type: integer
+        used_bytes:
+          type: integer
+        use_percent:
+          type: number
+      required:
+        - fs
+        - mount
+        - size_bytes
+        - used_bytes
+        - use_percent
+    NetworkMetrics:
+      type: object
+      properties:
+        rx_bytes_per_sec:
+          type: number
+        tx_bytes_per_sec:
+          type: number
+        iface:
+          type: string
+      required:
+        - rx_bytes_per_sec
+        - tx_bytes_per_sec
+        - iface
+    ServerMetrics:
+      type: object
+      properties:
+        cpu:
+          $ref: "#/components/schemas/CpuMetrics"
+        memory:
+          $ref: "#/components/schemas/MemoryMetrics"
+        disks:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiskMetric"
+        network:
+          $ref: "#/components/schemas/NetworkMetrics"
+        uptime_seconds:
+          type: integer
+      required:
+        - cpu
+        - memory
+        - disks
+        - network
+        - uptime_seconds
     AccessRequestBody:
       type: object
       properties:

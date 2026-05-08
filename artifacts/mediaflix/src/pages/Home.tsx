@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine } from "lucide-react";
+import { Link } from "wouter";
+import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine, Server } from "lucide-react";
 import {
   useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters,
   getGetPostersQueryKey, getGetActivityQueryKey, getGetDownloadsQueryKey, getGetRequestsQueryKey, getGetServiceStatusQueryKey,
@@ -174,7 +175,13 @@ export default function Home() {
       {/* Content */}
       <div className="relative z-10">
         {/* Nav */}
-        <nav className="flex items-center justify-between px-8 py-5" />
+        <nav className="flex items-center justify-between px-8 py-5">
+          <div />
+          <Link href="/server" className="flex items-center gap-1.5 text-white/30 hover:text-white/60 transition-colors text-sm">
+            <Server className="w-3.5 h-3.5" />
+            Server
+          </Link>
+        </nav>
 
         {/* Hero */}
         <section className="flex flex-col items-center text-center px-6 pt-12 pb-16">
