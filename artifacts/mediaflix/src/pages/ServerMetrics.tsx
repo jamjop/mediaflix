@@ -1,6 +1,8 @@
-import { Link } from "wouter";
-import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity } from "lucide-react";
-import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey } from "@workspace/api-client-react";
+import { useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut } from "lucide-react";
+import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey, useGetAuthMe, getGetAuthMeQueryKey, useAuthLogout } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ── Formatters ────────────────────────────────────────────────
 
@@ -99,16 +101,47 @@ function BigGauge({ pct, label }: { pct: number; label: string }) {
 // ── Page ──────────────────────────────────────────────────────
 
 export default function ServerMetrics() {
+  const [, navigate] = useLocation();
+  const queryClient = useQueryClient();
+
+  const { data: authStatus, isLoading: checkingAuth } = useGetAuthMe({
+    query: { queryKey: getGetAuthMeQueryKey(), retry: false },
+  });
+
+  const logout = useAuthLogout({
+    mutation: {
+      onSuccess() {
+        queryClient.clear();
+        navigate("/login");
+      },
+    },
+  });
+
   const { data: config } = useGetConfig();
   const { data: metrics, isLoading, dataUpdatedAt } = useGetServerMetrics({
     query: {
       queryKey: getGetServerMetricsQueryKey(),
       refetchInterval: 5_000,
+      enabled: authStatus?.authenticated === true,
     },
   });
 
   const siteName = config?.branding?.name ?? "MediaFlix";
   const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : null;
+
+  useEffect(() => {
+    if (!checkingAuth && authStatus?.authenticated === false) {
+      navigate("/login");
+    }
+  }, [checkingAuth, authStatus, navigate]);
+
+  if (checkingAuth || !authStatus?.authenticated) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white/60 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
@@ -120,15 +153,25 @@ export default function ServerMetrics() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4" />
-            {siteName}
-          </Link>
+              <ArrowLeft className="w-4 h-4" />
+              {siteName}
+            </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-white/30 text-xs">
-              {lastUpdated ? `Updated ${lastUpdated}` : "Refreshing every 5s"}
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-white/30 text-xs">
+                {lastUpdated ? `Updated ${lastUpdated}` : "Refreshing every 5s"}
+              </span>
+            </div>
+            <button
+              onClick={() => logout.mutate()}
+              className="flex items-center gap-1.5 text-white/25 hover:text-white/50 transition-colors text-xs"
+              title="Sign out"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Sign out
+            </button>
           </div>
         </div>
 

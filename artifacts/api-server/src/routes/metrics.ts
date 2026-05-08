@@ -3,6 +3,7 @@ import * as si from "systeminformation";
 import os from "os";
 import { GetServerMetricsResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
+import { requireAuth } from "./auth";
 
 const router: IRouter = Router();
 
@@ -11,7 +12,7 @@ const SKIP_FS = new Set(["tmpfs", "devtmpfs", "overlay", "squashfs", "udev", "no
 // Persist a baseline between requests for network rate calculation
 let lastNet: { rx: number; tx: number; ts: number } | null = null;
 
-router.get("/metrics", async (_req, res): Promise<void> => {
+router.get("/metrics", requireAuth, async (_req, res): Promise<void> => {
   try {
     const [load, temp, cpuInfo, mem, disks, netStats] = await Promise.all([
       si.currentLoad(),

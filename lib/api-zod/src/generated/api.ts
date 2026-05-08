@@ -176,6 +176,33 @@ export const GetDownloadsResponse = zod.object({
 });
 
 /**
+ * @summary Check authentication status
+ */
+export const GetAuthMeResponse = zod.object({
+  authenticated: zod.boolean(),
+});
+
+/**
+ * @summary Log in with password
+ */
+export const AuthLoginBody = zod.object({
+  password: zod.string(),
+});
+
+export const AuthLoginResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string(),
+});
+
+/**
+ * @summary Log out
+ */
+export const AuthLogoutResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string(),
+});
+
+/**
  * Returns live CPU, memory, disk, network, and uptime metrics for the host machine.
  * @summary Get server system metrics
  */

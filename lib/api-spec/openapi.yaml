@@ -22,6 +22,8 @@ tags:
     description: Service health status
   - name: access
     description: Access request form
+  - name: auth
+    description: Authentication for protected pages
 paths:
   /healthz:
     get:
@@ -114,6 +116,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DownloadsData"
+  /auth/me:
+    get:
+      operationId: getAuthMe
+      tags: [auth]
+      summary: Check authentication status
+      responses:
+        "200":
+          description: Auth status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatus"
+  /auth/login:
+    post:
+      operationId: authLogin
+      tags: [auth]
+      summary: Log in with password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthCredentials"
+      responses:
+        "200":
+          description: Login result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Wrong password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /auth/logout:
+    post:
+      operationId: authLogout
+      tags: [auth]
+      summary: Log out
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
   /metrics:
     get:
       operationId: getServerMetrics
@@ -565,6 +615,30 @@ components:
         - disks
         - network
         - uptime_seconds
+    AuthStatus:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+      required:
+        - authenticated
+    AuthCredentials:
+      type: object
+      properties:
+        password:
+          type: string
+      required:
+        - password
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
     AccessRequestBody:
       type: object
       properties:

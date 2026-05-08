@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Home from "@/pages/Home";
 import RequestAccess from "@/pages/RequestAccess";
 import ServerMetrics from "@/pages/ServerMetrics";
+import Login from "@/pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -11,6 +12,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/request-access" component={RequestAccess} />
+      <Route path="/login" component={Login} />
       <Route path="/server" component={ServerMetrics} />
     </Switch>
   );

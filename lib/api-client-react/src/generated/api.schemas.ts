@@ -172,6 +172,19 @@ export interface ServerMetrics {
   uptime_seconds: number;
 }
 
+export interface AuthStatus {
+  authenticated: boolean;
+}
+
+export interface AuthCredentials {
+  password: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+}
+
 export interface AccessRequestBody {
   name: string;
   plex_username: string;
