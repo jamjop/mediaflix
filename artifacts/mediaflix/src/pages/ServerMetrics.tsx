@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut } from "lucide-react";
+import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut, Zap } from "lucide-react";
 import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey, useGetAuthMe, getGetAuthMeQueryKey, useAuthLogout } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -277,7 +277,86 @@ export default function ServerMetrics() {
               </StatCard>
             )}
 
-            {/* Row 3: Network + Uptime */}
+            {/* Row 3: GPU (if present) */}
+            {metrics.gpus.length > 0 && (
+              <StatCard icon={<Zap className="w-4 h-4" />} title="GPU">
+                <div className="space-y-6">
+                  {metrics.gpus.map((gpu, i) => (
+                    <div key={i} className={metrics.gpus.length > 1 ? "pb-5 border-b border-white/[0.05] last:pb-0 last:border-0" : ""}>
+                      {/* Name row */}
+                      <div className="flex items-start justify-between mb-4 gap-4">
+                        <div>
+                          <div className="text-white/40 text-xs mb-0.5">{gpu.vendor}</div>
+                          <div className="text-white/80 text-sm font-medium leading-snug">{gpu.model}</div>
+                        </div>
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          {gpu.temp_celsius !== null && gpu.temp_celsius !== undefined && (
+                            <div className="text-right">
+                              <div className="text-white/40 text-xs mb-0.5 flex items-center justify-end gap-1">
+                                <Thermometer className="w-3 h-3" /> Temp
+                              </div>
+                              <div className={`text-sm font-semibold ${tempColor(gpu.temp_celsius)}`}>
+                                {gpu.temp_celsius}°C
+                              </div>
+                            </div>
+                          )}
+                          {gpu.vram_mb !== null && gpu.vram_mb !== undefined && (
+                            <div className="text-right">
+                              <div className="text-white/40 text-xs mb-0.5">VRAM</div>
+                              <div className="text-white/80 text-sm font-semibold">
+                                {gpu.vram_mb >= 1024 ? `${(gpu.vram_mb / 1024).toFixed(0)} GB` : `${gpu.vram_mb} MB`}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* Usage bars */}
+                      <div className="space-y-3">
+                        {gpu.usage_percent !== null && gpu.usage_percent !== undefined && (
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-white/60 text-xs">GPU Usage</span>
+                              <span className="text-white/40 text-xs">{gpu.usage_percent.toFixed(1)}%</span>
+                            </div>
+                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full bg-gradient-to-r ${usageColor(gpu.usage_percent)} transition-all duration-700`}
+                                style={{ width: `${Math.min(gpu.usage_percent, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {gpu.memory_usage_percent !== null && gpu.memory_usage_percent !== undefined && (
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-white/60 text-xs">VRAM Usage</span>
+                              <span className="text-white/40 text-xs">
+                                {gpu.memory_used_mb != null && gpu.memory_total_mb != null
+                                  ? `${gpu.memory_used_mb >= 1024 ? `${(gpu.memory_used_mb / 1024).toFixed(1)} GB` : `${gpu.memory_used_mb} MB`} / ${gpu.memory_total_mb >= 1024 ? `${(gpu.memory_total_mb / 1024).toFixed(0)} GB` : `${gpu.memory_total_mb} MB`}`
+                                  : `${gpu.memory_usage_percent.toFixed(1)}%`}
+                              </span>
+                            </div>
+                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full bg-gradient-to-r ${usageColor(gpu.memory_usage_percent)} transition-all duration-700`}
+                                style={{ width: `${Math.min(gpu.memory_usage_percent, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {gpu.usage_percent === null && gpu.memory_usage_percent === null && (
+                          <p className="text-white/25 text-xs">
+                            Utilization data unavailable — install nvidia-smi or rocm-smi for live GPU stats.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </StatCard>
+            )}
+
+            {/* Row 4: Network + Uptime */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Network */}
               <StatCard icon={<Network className="w-4 h-4" />} title="Network">

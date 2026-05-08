@@ -237,6 +237,18 @@ export const GetServerMetricsResponse = zod.object({
     iface: zod.string(),
   }),
   uptime_seconds: zod.number(),
+  gpus: zod.array(
+    zod.object({
+      vendor: zod.string(),
+      model: zod.string(),
+      vram_mb: zod.number().nullish(),
+      temp_celsius: zod.number().nullish(),
+      usage_percent: zod.number().nullish(),
+      memory_used_mb: zod.number().nullish(),
+      memory_total_mb: zod.number().nullish(),
+      memory_usage_percent: zod.number().nullish(),
+    }),
+  ),
 });
 
 /**

@@ -594,6 +594,34 @@ components:
         - rx_bytes_per_sec
         - tx_bytes_per_sec
         - iface
+    GpuMetric:
+      type: object
+      properties:
+        vendor:
+          type: string
+        model:
+          type: string
+        vram_mb:
+          type: number
+          nullable: true
+        temp_celsius:
+          type: number
+          nullable: true
+        usage_percent:
+          type: number
+          nullable: true
+        memory_used_mb:
+          type: number
+          nullable: true
+        memory_total_mb:
+          type: number
+          nullable: true
+        memory_usage_percent:
+          type: number
+          nullable: true
+      required:
+        - vendor
+        - model
     ServerMetrics:
       type: object
       properties:
@@ -609,12 +637,17 @@ components:
           $ref: "#/components/schemas/NetworkMetrics"
         uptime_seconds:
           type: integer
+        gpus:
+          type: array
+          items:
+            $ref: "#/components/schemas/GpuMetric"
       required:
         - cpu
         - memory
         - disks
         - network
         - uptime_seconds
+        - gpus
     AuthStatus:
       type: object
       properties:

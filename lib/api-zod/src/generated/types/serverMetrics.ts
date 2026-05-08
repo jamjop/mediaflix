@@ -7,6 +7,7 @@
  */
 import type { CpuMetrics } from "./cpuMetrics";
 import type { DiskMetric } from "./diskMetric";
+import type { GpuMetric } from "./gpuMetric";
 import type { MemoryMetrics } from "./memoryMetrics";
 import type { NetworkMetrics } from "./networkMetrics";
 
@@ -16,4 +17,5 @@ export interface ServerMetrics {
   disks: DiskMetric[];
   network: NetworkMetrics;
   uptime_seconds: number;
+  gpus: GpuMetric[];
 }

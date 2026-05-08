@@ -16,6 +16,7 @@ export * from "./cpuMetrics";
 export * from "./diskMetric";
 export * from "./downloadsData";
 export * from "./downloadSlot";
+export * from "./gpuMetric";
 export * from "./healthCheckData";
 export * from "./healthStatus";
 export * from "./mediaRequest";

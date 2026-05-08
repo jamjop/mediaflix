@@ -164,12 +164,24 @@ export interface NetworkMetrics {
   iface: string;
 }
 
+export interface GpuMetric {
+  vendor: string;
+  model: string;
+  vram_mb?: number | null;
+  temp_celsius?: number | null;
+  usage_percent?: number | null;
+  memory_used_mb?: number | null;
+  memory_total_mb?: number | null;
+  memory_usage_percent?: number | null;
+}
+
 export interface ServerMetrics {
   cpu: CpuMetrics;
   memory: MemoryMetrics;
   disks: DiskMetric[];
   network: NetworkMetrics;
   uptime_seconds: number;
+  gpus: GpuMetric[];
 }
 
 export interface AuthStatus {

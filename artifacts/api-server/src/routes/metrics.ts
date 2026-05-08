@@ -14,13 +14,14 @@ let lastNet: { rx: number; tx: number; ts: number } | null = null;
 
 router.get("/metrics", requireAuth, async (_req, res): Promise<void> => {
   try {
-    const [load, temp, cpuInfo, mem, disks, netStats] = await Promise.all([
+    const [load, temp, cpuInfo, mem, disks, netStats, graphics] = await Promise.all([
       si.currentLoad(),
       si.cpuTemperature(),
       si.cpu(),
       si.mem(),
       si.fsSize(),
       si.networkStats(),
+      si.graphics(),
     ]);
 
     // CPU
@@ -61,6 +62,26 @@ router.get("/metrics", requireAuth, async (_req, res): Promise<void> => {
     lastNet = { rx: totalRx, tx: totalTx, ts: now };
     const primaryIface = netStats.find((n) => n.iface !== "lo")?.iface ?? "eth0";
 
+    // GPUs — filter out headless/dummy entries with no model
+    const gpus = (graphics.controllers ?? [])
+      .filter((g) => g.model && g.model.trim() !== "")
+      .map((g) => {
+        const memTotalMb = g.memoryTotal && g.memoryTotal > 0 ? g.memoryTotal : null;
+        const memUsedMb = g.memoryUsed && g.memoryUsed > 0 ? g.memoryUsed : null;
+        const memPct =
+          memTotalMb && memUsedMb ? Math.round((memUsedMb / memTotalMb) * 1000) / 10 : null;
+        return {
+          vendor: g.vendor || "Unknown",
+          model: g.model,
+          vram_mb: g.vram && g.vram > 0 ? g.vram : null,
+          temp_celsius: g.temperatureGpu && g.temperatureGpu > 0 ? Math.round(g.temperatureGpu) : null,
+          usage_percent: g.utilizationGpu != null && g.utilizationGpu >= 0 ? Math.round(g.utilizationGpu * 10) / 10 : null,
+          memory_used_mb: memUsedMb,
+          memory_total_mb: memTotalMb,
+          memory_usage_percent: memPct,
+        };
+      });
+
     const result = GetServerMetricsResponse.parse({
       cpu: {
         usage_percent: usagePercent,
@@ -84,6 +105,7 @@ router.get("/metrics", requireAuth, async (_req, res): Promise<void> => {
         iface: primaryIface,
       },
       uptime_seconds: Math.floor(os.uptime()),
+      gpus,
     });
 
     res.json(result);
