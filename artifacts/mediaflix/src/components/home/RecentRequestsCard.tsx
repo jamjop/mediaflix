@@ -31,9 +31,9 @@ function CardSkeleton() {
         <div className="h-4 w-32 bg-white/[0.06] rounded animate-pulse" />
         <div className="h-3 w-20 bg-white/[0.06] rounded animate-pulse" />
       </div>
-      <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="aspect-[2/3] rounded-lg bg-white/[0.06] animate-pulse" />
+      <div className="flex gap-2.5 overflow-hidden">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={i} className="flex-shrink-0 w-[90px] aspect-[2/3] rounded-lg bg-white/[0.06] animate-pulse" />
         ))}
       </div>
     </div>
@@ -81,12 +81,12 @@ export function RecentRequestsCard({
       ) : requests.length === 0 ? (
         <p className="text-center text-sm text-white/30 py-10">No requests yet.</p>
       ) : (
-        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+        <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
           {requests.map((req) => {
             const { label, color, pulse } = getStatusMeta(req);
             const posterUrl = req.poster_path ? `${TMDB_IMG}${req.poster_path}` : null;
             return (
-              <div key={req.id} className="group relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.06]">
+              <div key={req.id} className="group relative flex-shrink-0 w-[90px] aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.06]">
                 {posterUrl ? (
                   <img
                     src={posterUrl}

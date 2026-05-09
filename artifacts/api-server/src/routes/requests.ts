@@ -37,7 +37,7 @@ router.get("/requests", async (_req, res): Promise<void> => {
     const data = (await fetchOverseerr(
       url,
       apiKey,
-      "/api/v1/request?take=8&skip=0&sort=added&filter=all",
+      "/api/v1/request?take=20&skip=0&sort=added&filter=all",
     )) as {
       results?: Array<{
         id: number;
