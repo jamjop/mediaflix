@@ -1,14 +1,9 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import yaml from "js-yaml";
 import { GetDownloadsResponse } from "@workspace/api-zod";
+import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
-
-const SETTINGS_PATH =
-  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
 
 interface SlotShape {
   filename: string;
@@ -21,29 +16,31 @@ interface SlotShape {
   source: string;
 }
 
-function loadSettings(): {
+interface HistorySlotShape {
+  filename: string;
+  size: string;
+  source: string;
+  completed_at: number | null;
+}
+
+function loadDownloadSettings(): {
   sabUrl: string;
   sabKey: string;
   qbtUrl: string;
   qbtUser: string;
   qbtPass: string;
 } {
-  try {
-    const raw = readFileSync(SETTINGS_PATH, "utf8");
-    const parsed = yaml.load(raw) as Record<string, unknown>;
-    const services = (parsed.services as Record<string, string>) ?? {};
-    const sabnzbd = (parsed.sabnzbd as Record<string, string>) ?? {};
-    const qbittorrent = (parsed.qbittorrent as Record<string, string>) ?? {};
-    return {
-      sabUrl: services.sabnzbd?.trim() ?? "",
-      sabKey: sabnzbd.api_key?.trim() ?? "",
-      qbtUrl: services.qbittorrent?.trim() ?? "",
-      qbtUser: qbittorrent.username?.trim() ?? "",
-      qbtPass: qbittorrent.password?.trim() ?? "",
-    };
-  } catch {
-    return { sabUrl: "", sabKey: "", qbtUrl: "", qbtUser: "", qbtPass: "" };
-  }
+  const parsed = loadSettings();
+  const services = (parsed.services as Record<string, string>) ?? {};
+  const sabnzbd = (parsed.sabnzbd as Record<string, string>) ?? {};
+  const qbittorrent = (parsed.qbittorrent as Record<string, string>) ?? {};
+  return {
+    sabUrl: services.sabnzbd?.trim() ?? "",
+    sabKey: sabnzbd.api_key?.trim() ?? "",
+    qbtUrl: services.qbittorrent?.trim() ?? "",
+    qbtUser: qbittorrent.username?.trim() ?? "",
+    qbtPass: qbittorrent.password?.trim() ?? "",
+  };
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -82,6 +79,7 @@ function mapQbtState(state: string): string {
 
 async function fetchSabnzbd(url: string, apiKey: string): Promise<{
   slots: SlotShape[];
+  history: HistorySlotShape[];
   kbpersec: number;
   speed: string;
   mb: string;
@@ -89,13 +87,17 @@ async function fetchSabnzbd(url: string, apiKey: string): Promise<{
   diskspace1: string;
   noofslots: number;
 } | null> {
-  const apiUrl = `${url}/api?apikey=${encodeURIComponent(apiKey)}&output=json&mode=queue`;
-  const response = await fetch(apiUrl, { signal: AbortSignal.timeout(5000) });
-  if (!response.ok) {
-    logger.warn({ status: response.status }, "SABnzbd API returned non-OK status");
+  const [queueRes, historyRes] = await Promise.allSettled([
+    fetch(`${url}/api?apikey=${encodeURIComponent(apiKey)}&output=json&mode=queue`, { signal: AbortSignal.timeout(5000) }),
+    fetch(`${url}/api?apikey=${encodeURIComponent(apiKey)}&output=json&mode=history&limit=5`, { signal: AbortSignal.timeout(5000) }),
+  ]);
+
+  if (queueRes.status !== "fulfilled" || !queueRes.value.ok) {
+    logger.warn({ status: queueRes.status === "fulfilled" ? queueRes.value.status : "error" }, "SABnzbd queue API returned non-OK");
     return null;
   }
-  const data = (await response.json()) as {
+
+  const queueData = (await queueRes.value.json()) as {
     queue?: {
       speed?: string;
       kbpersec?: string;
@@ -106,7 +108,7 @@ async function fetchSabnzbd(url: string, apiKey: string): Promise<{
       slots?: Array<Record<string, unknown>>;
     };
   };
-  const q = data?.queue ?? {};
+  const q = queueData?.queue ?? {};
   const rawSlots = q.slots ?? [];
   const slots: SlotShape[] = rawSlots.map((s) => ({
     filename: String(s.filename ?? s.name ?? "Unknown"),
@@ -118,8 +120,23 @@ async function fetchSabnzbd(url: string, apiKey: string): Promise<{
     cat: String(s.cat ?? ""),
     source: "sabnzbd",
   }));
+
+  let history: HistorySlotShape[] = [];
+  if (historyRes.status === "fulfilled" && historyRes.value.ok) {
+    const historyData = (await historyRes.value.json()) as {
+      history?: { slots?: Array<Record<string, unknown>> };
+    };
+    history = (historyData?.history?.slots ?? []).map((s) => ({
+      filename: String(s.name ?? s.filename ?? "Unknown"),
+      size: String(s.size ?? "0 B"),
+      source: "sabnzbd",
+      completed_at: s.completed != null ? parseInt(String(s.completed), 10) : null,
+    }));
+  }
+
   return {
     slots,
+    history,
     kbpersec: parseFloat(String(q.kbpersec ?? "0")),
     speed: String(q.speed ?? "0"),
     mb: String(q.mb ?? "0"),
@@ -133,9 +150,9 @@ async function fetchSabnzbd(url: string, apiKey: string): Promise<{
 
 async function fetchQbittorrent(url: string, user: string, pass: string): Promise<{
   slots: SlotShape[];
+  history: HistorySlotShape[];
   kbpersec: number;
 } | null> {
-  // Attempt login if credentials provided
   let cookie = "";
   if (user || pass) {
     const loginRes = await fetch(`${url}/api/v2/auth/login`, {
@@ -156,17 +173,17 @@ async function fetchQbittorrent(url: string, user: string, pass: string): Promis
   const headers: Record<string, string> = {};
   if (cookie) headers["Cookie"] = cookie;
 
-  const res = await fetch(`${url}/api/v2/torrents/info?filter=downloading`, {
-    headers,
-    signal: AbortSignal.timeout(5000),
-  });
+  const [activeRes, completedRes] = await Promise.allSettled([
+    fetch(`${url}/api/v2/torrents/info?filter=downloading`, { headers, signal: AbortSignal.timeout(5000) }),
+    fetch(`${url}/api/v2/torrents/info?filter=completed&limit=5`, { headers, signal: AbortSignal.timeout(5000) }),
+  ]);
 
-  if (!res.ok) {
-    logger.warn({ status: res.status }, "qBittorrent API returned non-OK status");
+  if (activeRes.status !== "fulfilled" || !activeRes.value.ok) {
+    logger.warn({ status: activeRes.status === "fulfilled" ? activeRes.value.status : "error" }, "qBittorrent API returned non-OK");
     return null;
   }
 
-  const torrents = (await res.json()) as Array<{
+  const torrents = (await activeRes.value.json()) as Array<{
     name?: string;
     progress?: number;
     size?: number;
@@ -181,13 +198,11 @@ async function fetchQbittorrent(url: string, user: string, pass: string): Promis
   const slots: SlotShape[] = torrents.map((t) => {
     totalDlSpeed += t.dlspeed ?? 0;
     const pct = ((t.progress ?? 0) * 100).toFixed(1);
-    const sizeBytes = t.size ?? 0;
-    const leftBytes = t.amount_left ?? 0;
     return {
       filename: String(t.name ?? "Unknown"),
       percentage: pct,
-      size: formatBytes(sizeBytes),
-      sizeleft: formatBytes(leftBytes),
+      size: formatBytes(t.size ?? 0),
+      sizeleft: formatBytes(t.amount_left ?? 0),
       status: mapQbtState(t.state ?? ""),
       timeleft: formatEta(t.eta ?? -1),
       cat: String(t.category ?? ""),
@@ -195,7 +210,22 @@ async function fetchQbittorrent(url: string, user: string, pass: string): Promis
     };
   });
 
-  return { slots, kbpersec: totalDlSpeed / 1024 };
+  let history: HistorySlotShape[] = [];
+  if (completedRes.status === "fulfilled" && completedRes.value.ok) {
+    const completed = (await completedRes.value.json()) as Array<{
+      name?: string;
+      size?: number;
+      completion_on?: number;
+    }>;
+    history = completed.slice(0, 5).map((t) => ({
+      filename: String(t.name ?? "Unknown"),
+      size: formatBytes(t.size ?? 0),
+      source: "qbittorrent",
+      completed_at: t.completion_on != null && t.completion_on > 0 ? t.completion_on : null,
+    }));
+  }
+
+  return { slots, history, kbpersec: totalDlSpeed / 1024 };
 }
 
 // ── Route ─────────────────────────────────────────────────────
@@ -208,12 +238,13 @@ const EMPTY = {
   diskspace1: "0",
   noofslots: 0,
   slots: [] as SlotShape[],
+  history: [] as HistorySlotShape[],
   configured: false,
   qbt_configured: false,
 } as const satisfies Parameters<typeof GetDownloadsResponse.parse>[0];
 
 router.get("/downloads", async (_req, res): Promise<void> => {
-  const { sabUrl, sabKey, qbtUrl, qbtUser, qbtPass } = loadSettings();
+  const { sabUrl, sabKey, qbtUrl, qbtUser, qbtPass } = loadDownloadSettings();
 
   const sabConfigured = !!(sabUrl && sabKey);
   const qbtConfigured = !!qbtUrl;
@@ -236,8 +267,9 @@ router.get("/downloads", async (_req, res): Promise<void> => {
 
   const combinedKbpersec = (sab?.kbpersec ?? 0) + (qbt?.kbpersec ?? 0);
   const allSlots = [...(sab?.slots ?? []), ...(qbt?.slots ?? [])];
+  const allHistory = [...(sab?.history ?? []), ...(qbt?.history ?? [])];
 
-  const result = GetDownloadsResponse.parse({
+  res.json(GetDownloadsResponse.parse({
     speed: combinedKbpersec > 0 ? `${(combinedKbpersec / 1024).toFixed(1)} M` : sab?.speed ?? "0",
     kbpersec: String(combinedKbpersec.toFixed(1)),
     mb: sab?.mb ?? "0",
@@ -245,11 +277,10 @@ router.get("/downloads", async (_req, res): Promise<void> => {
     diskspace1: sab?.diskspace1 ?? "0",
     noofslots: allSlots.length,
     slots: allSlots,
+    history: allHistory,
     configured: sabConfigured || qbtConfigured,
     qbt_configured: qbtConfigured,
-  });
-
-  res.json(result);
+  }));
 });
 
 export default router;

@@ -121,6 +121,13 @@ export interface DownloadSlot {
   source: string;
 }
 
+export interface DownloadHistorySlot {
+  filename: string;
+  size: string;
+  source: string;
+  completed_at?: number | null;
+}
+
 export interface DownloadsData {
   speed: string;
   kbpersec: string;
@@ -131,6 +138,22 @@ export interface DownloadsData {
   slots: DownloadSlot[];
   configured: boolean;
   qbt_configured: boolean;
+  history: DownloadHistorySlot[];
+}
+
+export interface RecentlyAddedItem {
+  title: string;
+  grandparent_title: string;
+  parent_title: string;
+  media_type: string;
+  thumb_url?: string | null;
+  added_at: number;
+  year?: number | null;
+}
+
+export interface RecentlyAddedData {
+  items: RecentlyAddedItem[];
+  configured: boolean;
 }
 
 export interface CpuMetrics {

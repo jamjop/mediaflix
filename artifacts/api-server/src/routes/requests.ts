@@ -1,29 +1,19 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import yaml from "js-yaml";
 import { GetRequestsResponse } from "@workspace/api-zod";
+import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-const SETTINGS_PATH =
-  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
-
 function loadOverseerrSettings(): { url: string; apiKey: string } {
   const envKey = process.env.OVERSEERR_API_KEY?.trim();
-  try {
-    const raw = readFileSync(SETTINGS_PATH, "utf8");
-    const parsed = yaml.load(raw) as Record<string, unknown>;
-    const services = (parsed.services as Record<string, string>) ?? {};
-    const overseerr = (parsed.overseerr as Record<string, string>) ?? {};
-    return {
-      url: services.overseerr?.trim() ?? "",
-      apiKey: envKey ?? overseerr.api_key?.trim() ?? "",
-    };
-  } catch {
-    return { url: "", apiKey: envKey ?? "" };
-  }
+  const parsed = loadSettings();
+  const services = (parsed.services as Record<string, string>) ?? {};
+  const overseerr = (parsed.overseerr as Record<string, string>) ?? {};
+  return {
+    url: services.overseerr?.trim() ?? "",
+    apiKey: envKey ?? overseerr.api_key?.trim() ?? "",
+  };
 }
 
 async function fetchOverseerr(url: string, apiKey: string, path: string) {
@@ -64,7 +54,6 @@ router.get("/requests", async (_req, res): Promise<void> => {
 
     const results = data.results ?? [];
 
-    // Fetch title + poster for each request in parallel
     const details = await Promise.allSettled(
       results.map((r) => {
         const mediaType = r.type === "tv" ? "tv" : "movie";
@@ -79,11 +68,8 @@ router.get("/requests", async (_req, res): Promise<void> => {
         details[i].status === "fulfilled"
           ? (details[i].value as Record<string, unknown> | null)
           : null;
-      const title =
-        String(detail?.title ?? detail?.name ?? "") || "Unknown Title";
-      const posterPath = String(
-        detail?.posterPath ?? r.media.posterPath ?? "",
-      );
+      const title = String(detail?.title ?? detail?.name ?? "") || "Unknown Title";
+      const posterPath = String(detail?.posterPath ?? r.media.posterPath ?? "");
       return {
         id: r.id,
         title,
@@ -91,9 +77,7 @@ router.get("/requests", async (_req, res): Promise<void> => {
         media_type: r.type,
         request_status: r.status,
         media_status: r.media.status,
-        requested_by: String(
-          r.requestedBy?.displayName ?? r.requestedBy?.username ?? "Unknown",
-        ),
+        requested_by: String(r.requestedBy?.displayName ?? r.requestedBy?.username ?? "Unknown"),
       };
     });
 

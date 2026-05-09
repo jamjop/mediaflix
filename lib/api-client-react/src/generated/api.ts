@@ -27,6 +27,7 @@ import type {
   HealthCheckData,
   HealthStatus,
   PostersData,
+  RecentlyAddedData,
   RequestsData,
   ServerMetrics,
   SiteConfig,
@@ -555,6 +556,82 @@ export function useGetDownloads<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetDownloadsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns recently added movies and episodes from Tautulli with thumbnails.
+ * @summary Get recently added media
+ */
+export const getGetRecentlyAddedUrl = () => {
+  return `/api/recently-added`;
+};
+
+export const getRecentlyAdded = async (
+  options?: RequestInit,
+): Promise<RecentlyAddedData> => {
+  return customFetch<RecentlyAddedData>(getGetRecentlyAddedUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetRecentlyAddedQueryKey = () => {
+  return [`/api/recently-added`] as const;
+};
+
+export const getGetRecentlyAddedQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRecentlyAdded>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRecentlyAdded>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRecentlyAddedQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRecentlyAdded>>
+  > = ({ signal }) => getRecentlyAdded({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRecentlyAdded>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRecentlyAddedQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRecentlyAdded>>
+>;
+export type GetRecentlyAddedQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get recently added media
+ */
+
+export function useGetRecentlyAdded<
+  TData = Awaited<ReturnType<typeof getRecentlyAdded>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getRecentlyAdded>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetRecentlyAddedQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

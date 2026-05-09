@@ -14,6 +14,8 @@ tags:
     description: Site configuration
   - name: activity
     description: Live streaming activity
+  - name: recently-added
+    description: Recently added media
   - name: requests
     description: Overseerr media requests
   - name: downloads
@@ -116,6 +118,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DownloadsData"
+  /recently-added:
+    get:
+      operationId: getRecentlyAdded
+      tags: [recently-added]
+      summary: Get recently added media
+      description: Returns recently added movies and episodes from Tautulli with thumbnails.
+      responses:
+        "200":
+          description: Recently added items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecentlyAddedData"
   /auth/me:
     get:
       operationId: getAuthMe
@@ -511,6 +526,10 @@ components:
           type: boolean
         qbt_configured:
           type: boolean
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/DownloadHistorySlot"
       required:
         - speed
         - kbpersec
@@ -521,6 +540,60 @@ components:
         - slots
         - configured
         - qbt_configured
+        - history
+    DownloadHistorySlot:
+      type: object
+      properties:
+        filename:
+          type: string
+        size:
+          type: string
+        source:
+          type: string
+        completed_at:
+          type: integer
+          nullable: true
+      required:
+        - filename
+        - size
+        - source
+    RecentlyAddedItem:
+      type: object
+      properties:
+        title:
+          type: string
+        grandparent_title:
+          type: string
+        parent_title:
+          type: string
+        media_type:
+          type: string
+        thumb_url:
+          type: string
+          nullable: true
+        added_at:
+          type: integer
+        year:
+          type: integer
+          nullable: true
+      required:
+        - title
+        - grandparent_title
+        - parent_title
+        - media_type
+        - added_at
+    RecentlyAddedData:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentlyAddedItem"
+        configured:
+          type: boolean
+      required:
+        - items
+        - configured
     CpuMetrics:
       type: object
       properties:

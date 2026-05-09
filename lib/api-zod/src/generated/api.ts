@@ -173,6 +173,33 @@ export const GetDownloadsResponse = zod.object({
   ),
   configured: zod.boolean(),
   qbt_configured: zod.boolean(),
+  history: zod.array(
+    zod.object({
+      filename: zod.string(),
+      size: zod.string(),
+      source: zod.string(),
+      completed_at: zod.number().nullish(),
+    }),
+  ),
+});
+
+/**
+ * Returns recently added movies and episodes from Tautulli with thumbnails.
+ * @summary Get recently added media
+ */
+export const GetRecentlyAddedResponse = zod.object({
+  items: zod.array(
+    zod.object({
+      title: zod.string(),
+      grandparent_title: zod.string(),
+      parent_title: zod.string(),
+      media_type: zod.string(),
+      thumb_url: zod.string().nullish(),
+      added_at: zod.number(),
+      year: zod.number().nullish(),
+    }),
+  ),
+  configured: zod.boolean(),
 });
 
 /**

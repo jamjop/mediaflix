@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { DownloadHistorySlot } from "./downloadHistorySlot";
 import type { DownloadSlot } from "./downloadSlot";
 
 export interface DownloadsData {
@@ -17,4 +18,5 @@ export interface DownloadsData {
   slots: DownloadSlot[];
   configured: boolean;
   qbt_configured: boolean;
+  history: DownloadHistorySlot[];
 }

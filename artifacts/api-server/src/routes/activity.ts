@@ -1,51 +1,32 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import yaml from "js-yaml";
 import { GetActivityResponse } from "@workspace/api-zod";
+import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
-// Resolve relative to the compiled bundle (dist/index.mjs → ../../.. → repo root).
-// Override with SETTINGS_PATH env var for non-standard layouts.
-const SETTINGS_PATH =
-  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
-
 function loadTautulliSettings(): { url: string; apiKey: string } {
   const envKey = process.env.TAUTULLI_API_KEY?.trim();
-  try {
-    const raw = readFileSync(SETTINGS_PATH, "utf8");
-    const parsed = yaml.load(raw) as Record<string, unknown>;
-    const services = (parsed.services as Record<string, string>) ?? {};
-    const tautulli = (parsed.tautulli as Record<string, string>) ?? {};
-    return {
-      url: services.tautulli?.trim() ?? "",
-      apiKey: envKey ?? tautulli.api_key?.trim() ?? "",
-    };
-  } catch {
-    return { url: "", apiKey: envKey ?? "" };
-  }
+  const parsed = loadSettings();
+  const services = (parsed.services as Record<string, string>) ?? {};
+  const tautulli = (parsed.tautulli as Record<string, string>) ?? {};
+  return {
+    url: services.tautulli?.trim() ?? "",
+    apiKey: envKey ?? tautulli.api_key?.trim() ?? "",
+  };
 }
 
 router.get("/activity", async (_req, res): Promise<void> => {
   const { url, apiKey } = loadTautulliSettings();
 
   if (!url || !apiKey) {
-    const result = GetActivityResponse.parse({
-      stream_count: 0,
-      sessions: [],
-      configured: false,
-    });
-    res.json(result);
+    res.json(GetActivityResponse.parse({ stream_count: 0, sessions: [], configured: false }));
     return;
   }
 
   try {
     const apiUrl = `${url}/api/v2?apikey=${encodeURIComponent(apiKey)}&cmd=get_activity`;
-    const response = await fetch(apiUrl, {
-      signal: AbortSignal.timeout(5000),
-    });
+    const response = await fetch(apiUrl, { signal: AbortSignal.timeout(5000) });
 
     if (!response.ok) {
       logger.warn({ status: response.status }, "Tautulli API returned non-OK status");
@@ -79,13 +60,7 @@ router.get("/activity", async (_req, res): Promise<void> => {
       view_offset: parseInt(String(s.view_offset ?? "0"), 10),
     }));
 
-    const result = GetActivityResponse.parse({
-      stream_count: streamCount,
-      sessions,
-      configured: true,
-    });
-
-    res.json(result);
+    res.json(GetActivityResponse.parse({ stream_count: streamCount, sessions, configured: true }));
   } catch (err) {
     logger.error({ err }, "Failed to fetch Tautulli activity");
     res.json(GetActivityResponse.parse({ stream_count: 0, sessions: [], configured: true }));

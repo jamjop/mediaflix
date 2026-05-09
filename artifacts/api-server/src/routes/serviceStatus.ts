@@ -1,38 +1,25 @@
 import { Router, type IRouter } from "express";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import yaml from "js-yaml";
 import { GetServiceStatusResponse } from "@workspace/api-zod";
+import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
-
-const SETTINGS_PATH =
-  process.env.SETTINGS_PATH ?? fileURLToPath(new URL("../../../settings.yaml", import.meta.url));
 
 type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent";
 const SERVICE_KEYS: ServiceKey[] = ["plex", "overseerr", "tautulli", "radarr", "sonarr", "sabnzbd", "qbittorrent"];
 
 function loadServiceUrls(): Record<ServiceKey, string> {
-  try {
-    const raw = readFileSync(SETTINGS_PATH, "utf8");
-    const parsed = yaml.load(raw) as Record<string, unknown>;
-    const services = (parsed.services as Record<string, string>) ?? {};
-    return Object.fromEntries(
-      SERVICE_KEYS.map((k) => [k, services[k]?.trim() ?? ""])
-    ) as Record<ServiceKey, string>;
-  } catch {
-    return Object.fromEntries(SERVICE_KEYS.map((k) => [k, ""])) as Record<ServiceKey, string>;
-  }
+  const parsed = loadSettings();
+  const services = (parsed.services as Record<string, string>) ?? {};
+  return Object.fromEntries(
+    SERVICE_KEYS.map((k) => [k, services[k]?.trim() ?? ""])
+  ) as Record<ServiceKey, string>;
 }
 
 async function ping(url: string): Promise<{ ok: boolean; latency_ms: number }> {
   const start = Date.now();
   try {
-    await fetch(url, {
-      method: "HEAD",
-      signal: AbortSignal.timeout(4000),
-    });
+    await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(4000) });
     return { ok: true, latency_ms: Date.now() - start };
   } catch {
     return { ok: false, latency_ms: Date.now() - start };
