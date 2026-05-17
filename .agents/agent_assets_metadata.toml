@@ -6,6 +6,12 @@ uri = "file://artifacts/mediaflix/public/preview-image.png"
 type = "image"
 title = "noahflix dashboard preview"
 
+[[generated]]
+id = "TvMhZzB6jsYKg-ZQSc_uQ"
+uri = "file://artifacts/mediaflix/public/icon-512.png"
+type = "image"
+title = "noahflix pwa icon 512"
+
 [[outputs]]
 id = "-ELNxtNa1K4upNpKcsMAm"
 uri = "file://artifacts/mediaflix/public/preview-image.png"

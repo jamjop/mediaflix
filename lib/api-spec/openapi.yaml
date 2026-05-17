@@ -223,6 +223,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AccessRequestResponse"
+  /diskspace:
+    get:
+      operationId: getDiskSpace
+      tags: [services]
+      summary: Get media library disk usage
+      description: Fetches disk space from Radarr and Sonarr. Returns configured=false if neither service has an API key set.
+      responses:
+        "200":
+          description: Disk space data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiskSpaceData"
 components:
   schemas:
     HealthStatus:
@@ -781,3 +794,37 @@ components:
       required:
         - success
         - message
+    DiskDrive:
+      type: object
+      properties:
+        label:
+          type: string
+        path:
+          type: string
+        freeGb:
+          type: number
+        totalGb:
+          type: number
+        usedPercent:
+          type: number
+        source:
+          type: string
+      required:
+        - label
+        - path
+        - freeGb
+        - totalGb
+        - usedPercent
+        - source
+    DiskSpaceData:
+      type: object
+      properties:
+        drives:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiskDrive"
+        configured:
+          type: boolean
+      required:
+        - drives
+        - configured

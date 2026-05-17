@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, Clock, Thermometer, Activity, LogOut, Zap, Play } from "lucide-react";
 import { useGetConfig, useGetServerMetrics, getGetServerMetricsQueryKey, useGetAuthMe, getGetAuthMeQueryKey, useAuthLogout, useGetActivity, getGetActivityQueryKey } from "@workspace/api-client-react";
@@ -103,9 +103,11 @@ function BigGauge({ pct, label }: { pct: number; label: string }) {
 export default function ServerMetrics() {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const wasAuthenticated = useRef(false);
 
   const { data: authStatus, isLoading: checkingAuth } = useGetAuthMe({
-    query: { queryKey: getGetAuthMeQueryKey(), retry: false },
+    query: { queryKey: getGetAuthMeQueryKey(), retry: false, refetchInterval: 5 * 60_000 },
   });
 
   const logout = useAuthLogout({
@@ -137,8 +139,16 @@ export default function ServerMetrics() {
   const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : null;
 
   useEffect(() => {
-    if (!checkingAuth && authStatus?.authenticated === false) {
-      navigate("/login");
+    if (authStatus?.authenticated === true) {
+      wasAuthenticated.current = true;
+    } else if (!checkingAuth && authStatus?.authenticated === false) {
+      if (wasAuthenticated.current) {
+        // Was logged in — session expired while on the page
+        setSessionExpired(true);
+      } else {
+        // Never logged in this session — go straight to login
+        navigate("/login");
+      }
     }
   }, [checkingAuth, authStatus, navigate]);
 
@@ -152,6 +162,22 @@ export default function ServerMetrics() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
+      {/* Session expiry banner */}
+      {sessionExpired && (
+        <div className="fixed top-0 inset-x-0 z-50 bg-amber-500/10 border-b border-amber-500/30 backdrop-blur-sm px-4 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <svg className="w-4 h-4 text-amber-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span className="text-amber-300 text-sm font-medium">Your session has expired.</span>
+          </div>
+          <Link href="/login" className="text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+            Log in again →
+          </Link>
+        </div>
+      )}
+
       {/* Background gradient */}
       <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-[#0d0d18] to-slate-950 pointer-events-none" />
 

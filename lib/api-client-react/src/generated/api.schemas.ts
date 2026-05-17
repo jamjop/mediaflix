@@ -235,3 +235,17 @@ export interface AccessRequestResponse {
   success: boolean;
   message: string;
 }
+
+export interface DiskDrive {
+  label: string;
+  path: string;
+  freeGb: number;
+  totalGb: number;
+  usedPercent: number;
+  source: string;
+}
+
+export interface DiskSpaceData {
+  drives: DiskDrive[];
+  configured: boolean;
+}

@@ -23,6 +23,7 @@ import type {
   AuthCredentials,
   AuthResponse,
   AuthStatus,
+  DiskSpaceData,
   DownloadsData,
   HealthCheckData,
   HealthStatus,
@@ -1034,3 +1035,79 @@ export const useSubmitAccessRequest = <
 > => {
   return useMutation(getSubmitAccessRequestMutationOptions(options));
 };
+
+/**
+ * Fetches disk space from Radarr and Sonarr. Returns configured=false if neither service has an API key set.
+ * @summary Get media library disk usage
+ */
+export const getGetDiskSpaceUrl = () => {
+  return `/api/diskspace`;
+};
+
+export const getDiskSpace = async (
+  options?: RequestInit,
+): Promise<DiskSpaceData> => {
+  return customFetch<DiskSpaceData>(getGetDiskSpaceUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetDiskSpaceQueryKey = () => {
+  return [`/api/diskspace`] as const;
+};
+
+export const getGetDiskSpaceQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDiskSpace>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDiskSpace>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDiskSpaceQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDiskSpace>>> = ({
+    signal,
+  }) => getDiskSpace({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDiskSpace>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDiskSpaceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDiskSpace>>
+>;
+export type GetDiskSpaceQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get media library disk usage
+ */
+
+export function useGetDiskSpace<
+  TData = Awaited<ReturnType<typeof getDiskSpace>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDiskSpace>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDiskSpaceQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

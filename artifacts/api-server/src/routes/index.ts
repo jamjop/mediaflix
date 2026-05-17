@@ -10,6 +10,8 @@ import downloadsRouter from "./downloads";
 import accessRequestRouter from "./accessRequest";
 import authRouter from "./auth";
 import metricsRouter from "./metrics";
+import streamRouter from "./stream";
+import diskspaceRouter from "./diskspace";
 
 const router: IRouter = Router();
 
@@ -24,5 +26,7 @@ router.use(downloadsRouter);
 router.use(accessRequestRouter);
 router.use(authRouter);
 router.use(metricsRouter);
+router.use(streamRouter);
+router.use(diskspaceRouter);
 
 export default router;

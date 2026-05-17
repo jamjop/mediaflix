@@ -297,3 +297,21 @@ export const SubmitAccessRequestResponse = zod.object({
   success: zod.boolean(),
   message: zod.string(),
 });
+
+/**
+ * Fetches disk space from Radarr and Sonarr. Returns configured=false if neither service has an API key set.
+ * @summary Get media library disk usage
+ */
+export const GetDiskSpaceResponse = zod.object({
+  drives: zod.array(
+    zod.object({
+      label: zod.string(),
+      path: zod.string(),
+      freeGb: zod.number(),
+      totalGb: zod.number(),
+      usedPercent: zod.number(),
+      source: zod.string(),
+    }),
+  ),
+  configured: zod.boolean(),
+});

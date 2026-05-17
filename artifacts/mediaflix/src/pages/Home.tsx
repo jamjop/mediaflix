@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine, Server } from "lucide-react";
 import {
-  useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters,
-  getGetPostersQueryKey, getGetActivityQueryKey, getGetDownloadsQueryKey, getGetRequestsQueryKey, getGetServiceStatusQueryKey,
+  useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters, useGetDiskSpace,
+  getGetPostersQueryKey, getGetActivityQueryKey, getGetDownloadsQueryKey, getGetRequestsQueryKey, getGetServiceStatusQueryKey, getGetDiskSpaceQueryKey,
 } from "@workspace/api-client-react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { NowWatchingCard } from "../components/home/NowWatchingCard";
@@ -11,6 +11,8 @@ import { DownloadsCard } from "../components/home/DownloadsCard";
 import { RecentRequestsCard } from "../components/home/RecentRequestsCard";
 import { ServiceHealthBar } from "../components/home/ServiceHealthBar";
 import { RecentlyAddedStrip } from "../components/home/RecentlyAddedStrip";
+import { DiskUsageCard } from "../components/home/DiskUsageCard";
+import { useDashboardSSE } from "../hooks/useDashboardSSE";
 
 const FALLBACK_POSTERS = [
   "https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
@@ -45,10 +47,14 @@ export default function Home() {
 
   const { data: config, isLoading } = useGetConfig();
   const { data: postersData } = useGetPosters({ query: { queryKey: getGetPostersQueryKey(), staleTime: 6 * 60 * 60 * 1000 } });
-  const { data: activity } = useGetActivity({ query: { queryKey: getGetActivityQueryKey(), refetchInterval: 30_000 } });
-  const { data: downloads } = useGetDownloads({ query: { queryKey: getGetDownloadsQueryKey(), refetchInterval: 30_000 } });
+  // activity, downloads, serviceStatus are kept fresh by the SSE hook below
+  const { data: activity } = useGetActivity({ query: { queryKey: getGetActivityQueryKey() } });
+  const { data: downloads } = useGetDownloads({ query: { queryKey: getGetDownloadsQueryKey() } });
   const { data: requestsData } = useGetRequests({ query: { queryKey: getGetRequestsQueryKey(), refetchInterval: 60_000 } });
-  const { data: serviceStatus } = useGetServiceStatus({ query: { queryKey: getGetServiceStatusQueryKey(), refetchInterval: 30_000 } });
+  const { data: serviceStatus } = useGetServiceStatus({ query: { queryKey: getGetServiceStatusQueryKey() } });
+  const { data: diskSpace } = useGetDiskSpace({ query: { queryKey: getGetDiskSpaceQueryKey(), staleTime: 60_000, refetchInterval: 5 * 60_000 } });
+
+  useDashboardSSE();
 
   const moviePosters = postersData?.posters?.length ? postersData.posters : FALLBACK_POSTERS;
 
@@ -245,6 +251,9 @@ export default function Home() {
             </ErrorBoundary>
             <ErrorBoundary label="RecentRequests">
               <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
+            </ErrorBoundary>
+            <ErrorBoundary label="DiskUsage">
+              <DiskUsageCard diskSpace={diskSpace} />
             </ErrorBoundary>
           </div>
 
