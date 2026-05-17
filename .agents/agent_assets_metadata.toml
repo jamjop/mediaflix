@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "cFagTQt9_HfSF_ZWlfLGz"
+uri = "file://artifacts/mediaflix/public/preview-image.png"
+type = "image"
+title = "noahflix social preview card"
