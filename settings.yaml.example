@@ -59,6 +59,18 @@ overseerr:
 sabnzbd:
   api_key: "your_sabnzbd_api_key_here"
 
+# Radarr integration — used for the Storage disk usage card.
+# Settings > General > Security > API Key in Radarr.
+# The API key is kept server-side and never exposed to the browser.
+radarr:
+  api_key: "your_radarr_api_key_here"
+
+# Sonarr integration — used for the Storage disk usage card.
+# Settings > General > Security > API Key in Sonarr.
+# The API key is kept server-side and never exposed to the browser.
+sonarr:
+  api_key: "your_sonarr_api_key_here"
+
 # TMDB integration — used to fetch movie posters for the background.
 # Free API key from https://www.themoviedb.org/settings/api
 # source options: now_playing | popular | top_rated | upcoming
