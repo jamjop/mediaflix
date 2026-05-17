@@ -1,8 +1,13 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "cFagTQt9_HfSF_ZWlfLGz"
 uri = "file://artifacts/mediaflix/public/preview-image.png"
 type = "image"
 title = "noahflix dashboard preview"
+
+[[outputs]]
+id = "-ELNxtNa1K4upNpKcsMAm"
+uri = "file://artifacts/mediaflix/public/preview-image.png"
+type = "image"
+title = "preview-image.png (1200×630)"
