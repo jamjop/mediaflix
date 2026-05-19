@@ -60,9 +60,9 @@ router.get("/diskspace", async (_req, res): Promise<void> => {
   const sonarrCfg = (parsed.sonarr as Record<string, string>) ?? {};
 
   const radarrUrl = services.radarr?.trim() ?? "";
-  const radarrKey = radarrCfg.api_key?.trim() ?? "";
+  const radarrKey = process.env.RADARR_API_KEY?.trim() ?? radarrCfg.api_key?.trim() ?? "";
   const sonarrUrl = services.sonarr?.trim() ?? "";
-  const sonarrKey = sonarrCfg.api_key?.trim() ?? "";
+  const sonarrKey = process.env.SONARR_API_KEY?.trim() ?? sonarrCfg.api_key?.trim() ?? "";
 
   const radarrConfigured = !!(radarrUrl && radarrKey);
   const sonarrConfigured = !!(sonarrUrl && sonarrKey);

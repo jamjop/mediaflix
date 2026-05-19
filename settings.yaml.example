@@ -44,39 +44,11 @@ links:
   sabnzbd: "/sabnzbd"
   qbittorrent: "/qbittorrent"
 
-# Tautulli integration — used to show live "Now Watching" data.
-# The API key is kept server-side and never exposed to the browser.
-tautulli:
-  api_key: "your_tautulli_api_key_here"
-
-# Overseerr/Jellyseerr integration — used to show recent media requests.
-# The API key is kept server-side and never exposed to the browser.
-overseerr:
-  api_key: "your_overseerr_api_key_here"
-
-# SABnzbd integration — used to show live download queue data.
-# The API key is kept server-side and never exposed to the browser.
-sabnzbd:
-  api_key: "your_sabnzbd_api_key_here"
-
-# Radarr integration — used for the Storage disk usage card.
-# Settings > General > Security > API Key in Radarr.
-# The API key is kept server-side and never exposed to the browser.
-radarr:
-  api_key: "your_radarr_api_key_here"
-
-# Sonarr integration — used for the Storage disk usage card.
-# Settings > General > Security > API Key in Sonarr.
-# The API key is kept server-side and never exposed to the browser.
-sonarr:
-  api_key: "your_sonarr_api_key_here"
-
-# TMDB integration — used to fetch movie posters for the background.
-# Free API key from https://www.themoviedb.org/settings/api
+# TMDB source — controls which movie list is used for background backdrops.
+# The API key itself lives in .env as TMDB_API_KEY.
 # source options: now_playing | popular | top_rated | upcoming
 tmdb:
-  api_key: "your_tmdb_api_key_here"
-  source: "now_playing"    # now_playing | popular | top_rated | upcoming
+  source: "now_playing"
 
 # Access buttons shown in the hero section
 access:

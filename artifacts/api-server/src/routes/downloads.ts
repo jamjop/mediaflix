@@ -36,10 +36,10 @@ function loadDownloadSettings(): {
   const qbittorrent = (parsed.qbittorrent as Record<string, string>) ?? {};
   return {
     sabUrl: services.sabnzbd?.trim() ?? "",
-    sabKey: sabnzbd.api_key?.trim() ?? "",
+    sabKey: process.env.SABNZBD_API_KEY?.trim() ?? sabnzbd.api_key?.trim() ?? "",
     qbtUrl: services.qbittorrent?.trim() ?? "",
-    qbtUser: qbittorrent.username?.trim() ?? "",
-    qbtPass: qbittorrent.password?.trim() ?? "",
+    qbtUser: process.env.QBITTORRENT_USERNAME?.trim() ?? qbittorrent.username?.trim() ?? "",
+    qbtPass: process.env.QBITTORRENT_PASSWORD?.trim() ?? qbittorrent.password?.trim() ?? "",
   };
 }
 
@@ -165,7 +165,7 @@ async function fetchQbittorrent(url: string, user: string, pass: string): Promis
     if (sid) cookie = `SID=${sid}`;
     const body = await loginRes.text();
     if (body.trim() === "Fails.") {
-      logger.warn("qBittorrent login failed — check credentials in settings.yaml");
+      logger.warn("qBittorrent login failed — check QBITTORRENT_USERNAME / QBITTORRENT_PASSWORD in .env");
       return null;
     }
   }
