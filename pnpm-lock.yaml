@@ -67,8 +67,8 @@ catalogs:
       specifier: ^7.3.2
       version: 7.3.2
     zod:
-      specifier: ^3.25.76
-      version: 3.25.76
+      specifier: 4.4.0
+      version: 4.4.0
 
 overrides:
   '@esbuild-kit/esm-loader': npm:tsx@^4.21.0
@@ -439,7 +439,7 @@ importers:
         version: 3.9.0(react@19.1.0)
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.4.0
 
   artifacts/mockup-sandbox:
     devDependencies:
@@ -622,7 +622,7 @@ importers:
         version: 7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.9.0)
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.4.0
 
   lib/api-client-react:
     dependencies:
@@ -640,7 +640,7 @@ importers:
     dependencies:
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.4.0
 
   lib/db:
     dependencies:
@@ -649,13 +649,13 @@ importers:
         version: 0.45.2(@types/pg@8.18.0)(pg@8.20.0)
       drizzle-zod:
         specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.45.2(@types/pg@8.18.0)(pg@8.20.0))(zod@3.25.76)
+        version: 0.8.3(drizzle-orm@0.45.2(@types/pg@8.18.0)(pg@8.20.0))(zod@4.4.0)
       pg:
         specifier: ^8.20.0
         version: 8.20.0
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.4.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -3226,11 +3226,11 @@ packages:
     resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
     engines: {node: '>=18'}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
   zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+
+  zod@4.4.0:
+    resolution: {integrity: sha512-932TE3dEKhhYkEZFv6meaxLaCyg1m6LSI0ETKCIyUqIim+KgIsB/kha/4CKwDEbYgMzS5QxAe2mtDPpaHLHdsQ==}
 
 snapshots:
 
@@ -4705,10 +4705,10 @@ snapshots:
       '@types/pg': 8.18.0
       pg: 8.20.0
 
-  drizzle-zod@0.8.3(drizzle-orm@0.45.2(@types/pg@8.18.0)(pg@8.20.0))(zod@3.25.76):
+  drizzle-zod@0.8.3(drizzle-orm@0.45.2(@types/pg@8.18.0)(pg@8.20.0))(zod@4.4.0):
     dependencies:
       drizzle-orm: 0.45.2(@types/pg@8.18.0)(pg@8.20.0)
-      zod: 3.25.76
+      zod: 4.4.0
 
   dunder-proto@1.0.1:
     dependencies:
@@ -5781,6 +5781,6 @@ snapshots:
 
   yoctocolors@2.1.2: {}
 
-  zod@3.25.76: {}
-
   zod@4.3.6: {}
+
+  zod@4.4.0: {}
