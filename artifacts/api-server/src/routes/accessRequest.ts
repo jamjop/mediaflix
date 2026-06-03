@@ -15,8 +15,7 @@ const SETTINGS_PATH =
 const TURNSTILE_VERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
-const ACCESS_TO_EMAIL =
-  process.env.ACCESS_TO_EMAIL ?? "capture_garnet1e@icloud.com";
+const ACCESS_TO_EMAIL = process.env.ACCESS_TO_EMAIL ?? "";
 
 const MIN_SUBMIT_MS = 3000;
 
@@ -45,7 +44,7 @@ function getSmtpConfig() {
     secure: process.env.SMTP_SECURE === "true",
     user: process.env.SMTP_USER ?? "",
     pass: process.env.SMTP_PASS ?? "",
-    from: process.env.SMTP_FROM ?? `"noahflix" <noreply@noahflix.net>`,
+    from: process.env.SMTP_FROM ?? "",
   };
 }
 
@@ -102,17 +101,19 @@ async function sendPushover(
   plexUsername: string,
   email: string,
   message: string,
+  siteName: string,
   log: (typeof logger),
 ): Promise<void> {
   const { token, user } = getPushoverConfig();
   if (!token || !user) return;
 
+  const subjectEncoded = encodeURIComponent(`Re: ${siteName} Access Request`);
   const body = new URLSearchParams({
     token,
     user,
     title: "🎬 New Access Request",
     message: [
-      `<b>${name}</b> wants to join noahflix`,
+      `<b>${name}</b> wants to join ${siteName}`,
       `Plex: <b>${plexUsername}</b>`,
       `Email: ${email}`,
       message ? `\n${message}` : "",
@@ -120,7 +121,7 @@ async function sendPushover(
       .filter(Boolean)
       .join("\n"),
     html: "1",
-    url: `mailto:${email}?subject=Re%3A%20noahflix%20Access%20Request`,
+    url: `mailto:${email}?subject=${subjectEncoded}`,
     url_title: `Reply to ${name}`,
     priority: "0",
     sound: "magic",
@@ -149,6 +150,17 @@ function loadTurnstiteSiteKey(): string {
     return t?.site_key ?? "";
   } catch {
     return "";
+  }
+}
+
+function loadSiteName(): string {
+  try {
+    const raw = readFileSync(SETTINGS_PATH, "utf8");
+    const parsed = yaml.load(raw) as Record<string, unknown>;
+    const b = parsed.branding as Record<string, string> | undefined;
+    return b?.name?.trim() || process.env.SITE_NAME || "mediaflix";
+  } catch {
+    return process.env.SITE_NAME || "mediaflix";
   }
 }
 
@@ -251,15 +263,24 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
   const safeEmail = sanitize(email, 254);
   const safeMessage =
     typeof message === "string" ? sanitize(message, 1000) : "";
+  const siteName = loadSiteName();
 
   // Send email
+  if (!ACCESS_TO_EMAIL) {
+    req.log.error("ACCESS_TO_EMAIL not configured — cannot send access request email");
+    res.status(500).json({
+      success: false,
+      message: "Email service is not configured. Please contact the admin directly.",
+    });
+    return;
+  }
+
   const smtp = getSmtpConfig();
   if (!smtp.host) {
     req.log.error("SMTP_HOST not configured — cannot send access request email");
     res.status(500).json({
       success: false,
-      message:
-        "Email service is not configured. Please contact the admin directly.",
+      message: "Email service is not configured. Please contact the admin directly.",
     });
     return;
   }
@@ -281,7 +302,7 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
   <div style="max-width:600px;margin:32px auto;background:#13131f;border-radius:16px;overflow:hidden;border:1px solid #1e1e3a;">
     <div style="background:linear-gradient(135deg,#7c3aed,#db2777);padding:24px 28px;">
       <h1 style="margin:0;color:#fff;font-size:22px;font-weight:700;">🎬 New Access Request</h1>
-      <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:14px;">Someone wants to join noahflix</p>
+      <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:14px;">Someone wants to join ${siteName}</p>
     </div>
     <div style="padding:28px;">
       <table style="width:100%;border-collapse:collapse;">
@@ -313,14 +334,14 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
         </tr>
       </table>
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid #1e1e3a;">
-        <a href="mailto:${safeEmail}?subject=Re%3A%20noahflix%20Access%20Request&body=Hi%20${encodeURIComponent(safeName)}%2C%0A%0AYour%20Plex%20invite%20has%20been%20sent%20to%20your%20email.%0A%0AThanks%2C%0ANoah"
+        <a href="mailto:${safeEmail}?subject=${encodeURIComponent(`Re: ${siteName} Access Request`)}&body=Hi%20${encodeURIComponent(safeName)}%2C%0A%0AYour%20Plex%20invite%20has%20been%20sent%20to%20your%20email.%0A%0AThanks"
            style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
           Reply to ${safeName}
         </a>
       </div>
     </div>
     <div style="padding:12px 28px;border-top:1px solid #1e1e3a;background:#0d0d1a;">
-      <p style="margin:0;color:#374151;font-size:11px;">Sent from noahflix.net &middot; ${new Date().toUTCString()}</p>
+      <p style="margin:0;color:#374151;font-size:11px;">Sent from ${siteName} &middot; ${new Date().toUTCString()}</p>
     </div>
   </div>
 </body>
@@ -333,7 +354,7 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
       subject: `🎬 Access Request: ${safePlex} (${safeName})`,
       html,
       text: [
-        "New noahflix Access Request",
+        `New ${siteName} Access Request`,
         "",
         `Name:          ${safeName}`,
         `Plex Username: ${safePlex}`,
@@ -350,7 +371,7 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
     req.log.info({ ip, plex: safePlex }, "Access request email sent");
 
     // Fire-and-forget — Pushover failure never blocks the user's response
-    void sendPushover(safeName, safePlex, safeEmail, safeMessage, logger);
+    void sendPushover(safeName, safePlex, safeEmail, safeMessage, siteName, logger);
 
     res.json({
       success: true,

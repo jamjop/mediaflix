@@ -29,10 +29,7 @@ app.use(
     },
   }),
 );
-const ALLOWED_ORIGINS = process.env.CORS_ORIGIN?.split(",").map((o) => o.trim()) ?? [
-  "https://noahflix.net",
-  "https://www.noahflix.net",
-];
+const ALLOWED_ORIGINS = process.env.CORS_ORIGIN?.split(",").map((o) => o.trim()) ?? [];
 app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 app.use(cookieParser());
 app.use(express.json({ limit: "1mb" }));

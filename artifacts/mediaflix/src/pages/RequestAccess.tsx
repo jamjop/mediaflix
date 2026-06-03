@@ -27,6 +27,7 @@ type FormState = "idle" | "loading" | "success" | "error";
 export default function RequestAccess() {
   const { data: config } = useGetConfig();
   const siteKey = config?.captcha_site_key ?? "";
+  const siteName = config?.branding?.name ?? "mediaflix";
 
   const [name, setName] = useState("");
   const [plexUsername, setPlexUsername] = useState("");
@@ -184,7 +185,7 @@ export default function RequestAccess() {
             <h1 className="text-2xl font-bold">Request Access</h1>
           </div>
           <p className="text-white/50 text-sm mb-8">
-            Get access to stream on noahflix
+            Get access to stream on {siteName}
           </p>
 
           {formState === "success" ? (
@@ -206,7 +207,7 @@ export default function RequestAccess() {
                   Before you fill out this form
                 </h2>
                 <p className="text-white/50 text-xs mt-0.5">
-                  You need a free Plex account to watch on noahflix
+                  You need a free Plex account to watch on {siteName}
                 </p>
               </div>
 

@@ -1,6 +1,6 @@
 {
-  "name": "Noahflix",
-  "short_name": "Noahflix",
+  "name": "mediaflix",
+  "short_name": "mediaflix",
   "description": "Personal Media & Homelab Dashboard",
   "start_url": "/",
   "display": "standalone",
