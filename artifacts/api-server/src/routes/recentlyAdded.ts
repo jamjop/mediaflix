@@ -47,9 +47,7 @@ router.get("/recently-added", async (_req, res): Promise<void> => {
     const items = raw.map((item) => {
       const mediaType = String(item.media_type ?? "movie");
       const thumb = String(item.thumb ?? item.grandparent_thumb ?? "");
-      const thumbUrl = thumb
-        ? `${url}/api/v2?apikey=${encodeURIComponent(apiKey)}&cmd=pms_image_proxy&img=${encodeURIComponent(thumb)}&width=150&height=225&fallback=poster`
-        : null;
+      const thumbUrl = thumb ? `/api/poster-proxy?img=${encodeURIComponent(thumb)}` : null;
       return {
         title: String(item.title ?? "Unknown"),
         grandparent_title: String(item.grandparent_title ?? ""),

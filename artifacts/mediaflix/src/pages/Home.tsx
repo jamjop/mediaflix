@@ -10,7 +10,6 @@ import { NowWatchingCard } from "../components/home/NowWatchingCard";
 import { DownloadsCard } from "../components/home/DownloadsCard";
 import { RecentRequestsCard } from "../components/home/RecentRequestsCard";
 import { ServiceHealthBar } from "../components/home/ServiceHealthBar";
-import { RecentlyAddedStrip } from "../components/home/RecentlyAddedStrip";
 import { DiskUsageCard } from "../components/home/DiskUsageCard";
 import { useDashboardSSE } from "../hooks/useDashboardSSE";
 
@@ -263,11 +262,6 @@ export default function Home() {
             </ErrorBoundary>
           </div>
         </section>
-
-        {/* Recently Added strip */}
-        <ErrorBoundary label="RecentlyAdded">
-          <RecentlyAddedStrip />
-        </ErrorBoundary>
 
         {/* Footer */}
         <footer className="text-center pb-8 text-white/20 text-xs">

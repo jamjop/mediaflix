@@ -12,6 +12,7 @@ import authRouter from "./auth";
 import metricsRouter from "./metrics";
 import streamRouter from "./stream";
 import diskspaceRouter from "./diskspace";
+import posterProxyRouter from "./posterProxy";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(authRouter);
 router.use(metricsRouter);
 router.use(streamRouter);
 router.use(diskspaceRouter);
+router.use(posterProxyRouter);
 
 export default router;
