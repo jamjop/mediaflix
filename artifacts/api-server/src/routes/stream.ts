@@ -45,7 +45,7 @@ router.get("/stream", async (req, res): Promise<void> => {
       sendEvent("serviceStatus", serviceStatus.value);
   }
 
-  await pushAll();
+  try { await pushAll(); } catch (err) { logger.warn({ err }, "SSE initial push failed"); }
 
   const interval = setInterval(async () => {
     if (res.writableEnded) {
@@ -53,7 +53,7 @@ router.get("/stream", async (req, res): Promise<void> => {
       return;
     }
     res.write(": heartbeat\n\n");
-    await pushAll();
+    try { await pushAll(); } catch (err) { logger.warn({ err }, "SSE push failed"); }
   }, 15_000);
 
   req.on("close", () => {

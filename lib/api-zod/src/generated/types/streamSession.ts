@@ -7,7 +7,6 @@
  */
 
 export interface StreamSession {
-  user: string;
   title: string;
   parent_title: string;
   grandparent_title: string;

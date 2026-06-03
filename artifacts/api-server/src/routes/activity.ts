@@ -48,7 +48,6 @@ router.get("/activity", async (_req, res): Promise<void> => {
     const streamCount = parseInt(String(tData.stream_count ?? "0"), 10);
 
     const sessions = rawSessions.map((s) => ({
-      user: String(s.user ?? s.friendly_name ?? "Unknown"),
       title: String(s.title ?? "Unknown"),
       parent_title: String(s.parent_title ?? ""),
       grandparent_title: String(s.grandparent_title ?? ""),

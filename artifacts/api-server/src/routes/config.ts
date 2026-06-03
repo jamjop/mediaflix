@@ -9,12 +9,11 @@ router.get("/config", (_req, res): void => {
 
   const background = (parsed.background as Record<string, string>) ?? {};
   const branding = (parsed.branding as Record<string, string>) ?? {};
-  const services = (parsed.services as Record<string, string>) ?? {};
   const links = (parsed.links as Record<string, string>) ?? {};
   const access = (parsed.access as Record<string, string>) ?? {};
   const turnstile = (parsed.turnstile as Record<string, string>) ?? {};
 
-  const emptyServices = { plex: "", overseerr: "", tautulli: "", radarr: "", sonarr: "", sabnzbd: "", qbittorrent: "" };
+  const emptyLinks = { plex: "", overseerr: "", tautulli: "", radarr: "", sonarr: "", sabnzbd: "", qbittorrent: "" };
 
   const config = {
     background: {
@@ -24,15 +23,6 @@ router.get("/config", (_req, res): void => {
       name: branding.name ?? "mediaflix",
       tagline: branding.tagline ?? "Your personal media universe.",
       accent_color: branding.accent_color ?? "#a855f7",
-    },
-    services: {
-      plex: services.plex ?? "",
-      overseerr: services.overseerr ?? "",
-      tautulli: services.tautulli ?? "",
-      radarr: services.radarr ?? "",
-      sonarr: services.sonarr ?? "",
-      sabnzbd: services.sabnzbd ?? "",
-      qbittorrent: services.qbittorrent ?? "",
     },
     links: {
       plex: links.plex ?? "",
@@ -57,8 +47,7 @@ router.get("/config", (_req, res): void => {
       ? {
           background: { style: "posters" },
           branding: { name: "mediaflix", tagline: "Your personal media universe.", accent_color: "#a855f7" },
-          services: { ...emptyServices },
-          links: { ...emptyServices },
+          links: { ...emptyLinks },
           access: { request_url: "", request_label: "Request Media", access_url: "", access_label: "Request Access" },
         }
       : config,

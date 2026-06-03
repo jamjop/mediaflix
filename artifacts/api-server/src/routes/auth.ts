@@ -60,7 +60,9 @@ router.post("/auth/login", loginLimiter, (req, res): void => {
     return;
   }
 
-  if (parsed.data.password !== configuredPassword) {
+  const a = Buffer.from(parsed.data.password);
+  const b = Buffer.from(configuredPassword);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     res.status(401).json(AuthLoginResponse.parse({ success: false, message: "Incorrect password." }));
     return;
   }

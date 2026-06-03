@@ -29,10 +29,14 @@ app.use(
     },
   }),
 );
-app.use(cors());
+const ALLOWED_ORIGINS = process.env.CORS_ORIGIN?.split(",").map((o) => o.trim()) ?? [
+  "https://noahflix.net",
+  "https://www.noahflix.net",
+];
+app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 app.use("/api", router);
 

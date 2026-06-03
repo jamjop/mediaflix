@@ -78,7 +78,6 @@ export default function Home() {
 
   const background = config?.background;
   const branding = config?.branding;
-  const services = config?.services;
   const links = config?.links;
   const access = config?.access;
 
@@ -93,10 +92,10 @@ export default function Home() {
   const accessUrl = access?.access_url?.trim() ?? "";
   const accessLabel = access?.access_label ?? "Request Access";
 
-  const tautulliUrl = (links?.tautulli?.trim() || services?.tautulli?.trim()) ?? "";
-  const qbittorrentUrl = (links?.qbittorrent?.trim() || services?.qbittorrent?.trim()) ?? "";
-  const sabnzbdUrl = (links?.sabnzbd?.trim() || services?.sabnzbd?.trim()) ?? "";
-  const overseerrLinkUrl = (links?.overseerr?.trim() || services?.overseerr?.trim()) ?? "";
+  const tautulliUrl = links?.tautulli?.trim() ?? "";
+  const qbittorrentUrl = links?.qbittorrent?.trim() ?? "";
+  const sabnzbdUrl = links?.sabnzbd?.trim() ?? "";
+  const overseerrLinkUrl = links?.overseerr?.trim() ?? "";
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden relative">
@@ -211,9 +210,7 @@ export default function Home() {
                     ))
                   : SERVICE_ORDER.map((key) => {
                       const meta = SERVICE_META[key];
-                      const internalUrl = services?.[key]?.trim() ?? "";
-                      const linkUrl = links?.[key]?.trim() ?? "";
-                      const href = linkUrl || internalUrl;
+                      const href = links?.[key]?.trim() ?? "";
                       const hasUrl = href !== "";
                       const Icon = meta.icon;
                       const Tag = hasUrl ? "a" : "div";

@@ -1,5 +1,4 @@
 export type StreamSession = {
-  user: string;
   title: string;
   parent_title: string;
   grandparent_title: string;
@@ -49,7 +48,7 @@ export function NowWatchingCard({ activity, tautulliUrl }: { activity?: Activity
   const tickerItems = sessions.map((s) => {
     const displayTitle = s.grandparent_title ? `${s.grandparent_title} · ${s.title}` : s.title;
     const stateIcon = s.state === "playing" ? "▶" : "⏸";
-    return `${s.user}  ${stateIcon}  ${displayTitle}  ·  ${s.progress_percent}%`;
+    return `${stateIcon}  ${displayTitle}  ·  ${s.progress_percent}%`;
   });
   const tickerText = tickerItems.join("          ");
 
@@ -86,12 +85,11 @@ export function NowWatchingCard({ activity, tautulliUrl }: { activity?: Activity
             const displayTitle = s.grandparent_title ? s.grandparent_title : s.title;
             const subtitle = s.grandparent_title ? s.title : s.player;
             const progress = parseInt(s.progress_percent, 10) || 0;
-            const initials = s.user.slice(0, 2).toUpperCase();
             const isPlaying = s.state === "playing";
             return (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-purple-300 text-xs font-bold">{initials}</span>
+                  <span className="text-purple-300 text-xs">{isPlaying ? "▶" : "⏸"}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
