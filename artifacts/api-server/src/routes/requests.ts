@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { GetRequestsResponse } from "@workspace/api-zod";
 import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
+import { isValidServiceUrl } from "../lib/validateUrl";
 
 const router: IRouter = Router();
 
@@ -16,6 +17,9 @@ function loadOverseerrSettings(): { url: string; apiKey: string } {
   };
 }
 
+const detailCache = new Map<string, { data: unknown; expiry: number }>();
+const DETAIL_TTL_MS = 10 * 60_000;
+
 async function fetchOverseerr(url: string, apiKey: string, path: string) {
   const res = await fetch(`${url}${path}`, {
     headers: { "X-Api-Key": apiKey, Accept: "application/json" },
@@ -28,7 +32,7 @@ async function fetchOverseerr(url: string, apiKey: string, path: string) {
 router.get("/requests", async (_req, res): Promise<void> => {
   const { url, apiKey } = loadOverseerrSettings();
 
-  if (!url || !apiKey) {
+  if (!url || !apiKey || !isValidServiceUrl(url)) {
     res.json(GetRequestsResponse.parse({ requests: [], configured: false }));
     return;
   }
@@ -59,7 +63,13 @@ router.get("/requests", async (_req, res): Promise<void> => {
         const mediaType = r.type === "tv" ? "tv" : "movie";
         const tmdbId = r.media.tmdbId;
         if (!tmdbId) return Promise.resolve(null);
-        return fetchOverseerr(url, apiKey, `/api/v1/${mediaType}/${tmdbId}`);
+        const cacheKey = `${mediaType}/${tmdbId}`;
+        const cached = detailCache.get(cacheKey);
+        if (cached && Date.now() < cached.expiry) return Promise.resolve(cached.data);
+        return fetchOverseerr(url, apiKey, `/api/v1/${mediaType}/${tmdbId}`).then((data) => {
+          detailCache.set(cacheKey, { data, expiry: Date.now() + DETAIL_TTL_MS });
+          return data;
+        });
       }),
     );
 

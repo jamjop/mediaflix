@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
+import { isValidServiceUrl } from "../lib/validateUrl";
 
 const router = Router();
 
@@ -64,8 +65,8 @@ router.get("/diskspace", async (_req, res): Promise<void> => {
   const sonarrUrl = services.sonarr?.trim() ?? "";
   const sonarrKey = process.env.SONARR_API_KEY?.trim() ?? sonarrCfg.api_key?.trim() ?? "";
 
-  const radarrConfigured = !!(radarrUrl && radarrKey);
-  const sonarrConfigured = !!(sonarrUrl && sonarrKey);
+  const radarrConfigured = !!(radarrUrl && radarrKey && isValidServiceUrl(radarrUrl));
+  const sonarrConfigured = !!(sonarrUrl && sonarrKey && isValidServiceUrl(sonarrUrl));
 
   if (!radarrConfigured && !sonarrConfigured) {
     res.json({ drives: [], configured: false });

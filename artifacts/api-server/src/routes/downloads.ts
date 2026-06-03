@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { GetDownloadsResponse } from "@workspace/api-zod";
 import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
+import { isValidServiceUrl } from "../lib/validateUrl";
 
 const router: IRouter = Router();
 
@@ -165,7 +166,7 @@ async function fetchQbittorrent(url: string, user: string, pass: string): Promis
     if (sid) cookie = `SID=${sid}`;
     const body = await loginRes.text();
     if (body.trim() === "Fails.") {
-      logger.warn("qBittorrent login failed — check QBITTORRENT_USERNAME / QBITTORRENT_PASSWORD in .env");
+      logger.warn("qBittorrent login failed — check credentials in .env");
       return null;
     }
   }
@@ -246,8 +247,8 @@ const EMPTY = {
 router.get("/downloads", async (_req, res): Promise<void> => {
   const { sabUrl, sabKey, qbtUrl, qbtUser, qbtPass } = loadDownloadSettings();
 
-  const sabConfigured = !!(sabUrl && sabKey);
-  const qbtConfigured = !!qbtUrl;
+  const sabConfigured = !!(sabUrl && sabKey && isValidServiceUrl(sabUrl));
+  const qbtConfigured = !!(qbtUrl && isValidServiceUrl(qbtUrl));
 
   if (!sabConfigured && !qbtConfigured) {
     res.json(GetDownloadsResponse.parse(EMPTY));

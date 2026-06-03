@@ -52,6 +52,7 @@ router.get("/config", (_req, res): void => {
         }
       : config,
   );
+  res.set("Cache-Control", "public, max-age=300");
   res.json(validated);
 });
 

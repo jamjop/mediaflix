@@ -270,6 +270,8 @@ router.post("/access-request", limiter, async (req, res): Promise<void> => {
       port: smtp.port,
       secure: smtp.secure,
       auth: smtp.user ? { user: smtp.user, pass: smtp.pass } : undefined,
+      connectionTimeout: 10_000,
+      socketTimeout: 15_000,
     });
 
     const html = `<!DOCTYPE html>

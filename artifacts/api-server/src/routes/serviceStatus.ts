@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { GetServiceStatusResponse } from "@workspace/api-zod";
 import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
+import { isValidServiceUrl } from "../lib/validateUrl";
 
 const router: IRouter = Router();
 
@@ -32,7 +33,7 @@ router.get("/service-status", async (_req, res): Promise<void> => {
   const results = await Promise.allSettled(
     SERVICE_KEYS.map(async (key) => {
       const url = urls[key];
-      if (!url) return { key, configured: false, ok: false, latency_ms: 0 };
+      if (!url || !isValidServiceUrl(url)) return { key, configured: false, ok: false, latency_ms: 0 };
       const { ok, latency_ms } = await ping(url);
       return { key, configured: true, ok, latency_ms };
     })

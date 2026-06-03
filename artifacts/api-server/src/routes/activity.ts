@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { GetActivityResponse } from "@workspace/api-zod";
 import { loadSettings } from "../lib/settings";
 import { logger } from "../lib/logger";
+import { isValidServiceUrl } from "../lib/validateUrl";
 
 const router: IRouter = Router();
 
@@ -19,7 +20,7 @@ function loadTautulliSettings(): { url: string; apiKey: string } {
 router.get("/activity", async (_req, res): Promise<void> => {
   const { url, apiKey } = loadTautulliSettings();
 
-  if (!url || !apiKey) {
+  if (!url || !apiKey || !isValidServiceUrl(url)) {
     res.json(GetActivityResponse.parse({ stream_count: 0, sessions: [], configured: false }));
     return;
   }
