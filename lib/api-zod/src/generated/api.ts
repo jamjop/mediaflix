@@ -28,6 +28,15 @@ export const GetConfigResponse = zod.object({
     tagline: zod.string(),
     accent_color: zod.string(),
   }),
+  services: zod.object({
+    plex: zod.string(),
+    overseerr: zod.string(),
+    tautulli: zod.string(),
+    radarr: zod.string(),
+    sonarr: zod.string(),
+    sabnzbd: zod.string(),
+    qbittorrent: zod.string(),
+  }),
   links: zod.object({
     plex: zod.string(),
     overseerr: zod.string(),
@@ -36,6 +45,7 @@ export const GetConfigResponse = zod.object({
     sonarr: zod.string(),
     sabnzbd: zod.string(),
     qbittorrent: zod.string(),
+    grafana: zod.string(),
   }),
   access: zod.object({
     request_url: zod.string(),
@@ -54,6 +64,7 @@ export const GetActivityResponse = zod.object({
   stream_count: zod.number(),
   sessions: zod.array(
     zod.object({
+      user: zod.string(),
       title: zod.string(),
       parent_title: zod.string(),
       grandparent_title: zod.string(),

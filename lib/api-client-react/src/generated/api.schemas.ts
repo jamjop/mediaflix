@@ -27,6 +27,7 @@ export interface SiteLinks {
   sonarr: string;
   sabnzbd: string;
   qbittorrent: string;
+  grafana: string;
 }
 
 export interface SiteBackground {

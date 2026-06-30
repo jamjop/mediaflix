@@ -43,6 +43,7 @@ links:
   sonarr: "/sonarr"
   sabnzbd: "/sabnzbd"
   qbittorrent: "/qbittorrent"
+  grafana: "/grafana"    # defaults to /grafana if omitted
 
 # TMDB source — controls which movie list is used for background backdrops.
 # The API key itself lives in .env as TMDB_API_KEY.

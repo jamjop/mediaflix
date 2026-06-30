@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine, Server } from "lucide-react";
+import { Play, Film, ChartColumn, Radar, Tv, Download, ArrowDownToLine, Server, LayoutDashboard } from "lucide-react";
 import {
   useGetConfig, useGetActivity, useGetDownloads, useGetRequests, useGetServiceStatus, useGetPosters, useGetDiskSpace,
   getGetPostersQueryKey, getGetActivityQueryKey, getGetDownloadsQueryKey, getGetRequestsQueryKey, getGetServiceStatusQueryKey, getGetDiskSpaceQueryKey,
@@ -24,20 +24,21 @@ const FALLBACK_POSTERS = [
   "https://image.tmdb.org/t/p/w1280/3P52oz9HPQWxcwHOwxtyrVV1LKi.jpg",
 ];
 
-type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent";
+type ServiceKey = "plex" | "overseerr" | "tautulli" | "radarr" | "sonarr" | "sabnzbd" | "qbittorrent" | "grafana";
 type LucideIcon = React.ComponentType<{ className?: string }>;
 
-const SERVICE_META: Record<ServiceKey, { name: string; description: string; icon: LucideIcon; color: string; glow: string }> = {
-  plex:        { name: "Plex",         description: "Stream your media",      icon: Play,           color: "from-amber-500 to-orange-600",   glow: "shadow-amber-500/20" },
-  overseerr:   { name: "Overseerr",    description: "Request content",        icon: Film,           color: "from-purple-500 to-indigo-600",  glow: "shadow-purple-500/20" },
-  tautulli:    { name: "Tautulli",     description: "Watch statistics",       icon: ChartColumn,    color: "from-teal-500 to-cyan-600",      glow: "shadow-teal-500/20" },
-  radarr:      { name: "Radarr",       description: "Movie management",       icon: Radar,          color: "from-yellow-500 to-amber-600",   glow: "shadow-yellow-500/20" },
-  sonarr:      { name: "Sonarr",       description: "TV show management",     icon: Tv,             color: "from-sky-500 to-blue-600",       glow: "shadow-sky-500/20" },
-  sabnzbd:     { name: "SABnzbd",      description: "Usenet downloads",       icon: Download,       color: "from-green-500 to-emerald-600",  glow: "shadow-green-500/20" },
-  qbittorrent: { name: "qBittorrent",  description: "Torrent downloads",      icon: ArrowDownToLine,color: "from-blue-500 to-indigo-600",    glow: "shadow-blue-500/20" },
+const SERVICE_META: Record<ServiceKey, { name: string; description: string; icon: LucideIcon; color: string; glow: string; defaultHref?: string }> = {
+  plex:        { name: "Plex",         description: "Stream your media",      icon: Play,            color: "from-amber-500 to-orange-600",   glow: "shadow-amber-500/20" },
+  overseerr:   { name: "Overseerr",    description: "Request content",        icon: Film,            color: "from-purple-500 to-indigo-600",  glow: "shadow-purple-500/20" },
+  tautulli:    { name: "Tautulli",     description: "Watch statistics",       icon: ChartColumn,     color: "from-teal-500 to-cyan-600",      glow: "shadow-teal-500/20" },
+  radarr:      { name: "Radarr",       description: "Movie management",       icon: Radar,           color: "from-yellow-500 to-amber-600",   glow: "shadow-yellow-500/20" },
+  sonarr:      { name: "Sonarr",       description: "TV show management",     icon: Tv,              color: "from-sky-500 to-blue-600",       glow: "shadow-sky-500/20" },
+  sabnzbd:     { name: "SABnzbd",      description: "Usenet downloads",       icon: Download,        color: "from-green-500 to-emerald-600",  glow: "shadow-green-500/20" },
+  qbittorrent: { name: "qBittorrent",  description: "Torrent downloads",      icon: ArrowDownToLine, color: "from-blue-500 to-indigo-600",    glow: "shadow-blue-500/20" },
+  grafana:     { name: "Grafana",      description: "Metrics & dashboards",   icon: LayoutDashboard, color: "from-orange-500 to-red-600",     glow: "shadow-orange-500/20", defaultHref: "/grafana" },
 };
 
-const SERVICE_ORDER: ServiceKey[] = ["plex", "overseerr", "tautulli", "radarr", "sonarr", "sabnzbd", "qbittorrent"];
+const SERVICE_ORDER: ServiceKey[] = ["plex", "overseerr", "tautulli", "radarr", "sonarr", "sabnzbd", "qbittorrent", "grafana"];
 
 export default function Home() {
   const [currentPoster, setCurrentPoster] = useState(0);
@@ -210,7 +211,7 @@ export default function Home() {
                     ))
                   : SERVICE_ORDER.map((key) => {
                       const meta = SERVICE_META[key];
-                      const href = links?.[key]?.trim() ?? "";
+                      const href = links?.[key]?.trim() || meta.defaultHref || "";
                       const hasUrl = href !== "";
                       const Icon = meta.icon;
                       const Tag = hasUrl ? "a" : "div";
