@@ -3,9 +3,7 @@ packages:
   - lib/*
   - lib/integrations/*
   - scripts
-
 autoInstallPeers: false
-
 catalog:
   '@replit/vite-plugin-cartographer': ^0.5.1
   '@replit/vite-plugin-dev-banner': ^0.1.1
@@ -29,19 +27,15 @@ catalog:
   vite: ^7.3.2
   wouter: ^3.3.5
   zod: 4.4.0
-
 minimumReleaseAge: 1440
-
 minimumReleaseAgeExclude:
   - '@replit/*'
   - stripe-replit-sync
-
 onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
   - msw
   - unrs-resolver
-
 overrides:
   '@esbuild-kit/esm-loader': npm:tsx@^4.21.0
   '@expo/ngrok-bin>@expo/ngrok-bin-darwin-arm64': '-'
@@ -133,3 +127,4 @@ overrides:
   rollup>@rollup/rollup-win32-x64-gnu: '-'
   rollup>@rollup/rollup-win32-x64-msvc: '-'
   yaml@>=2.0.0 <2.8.3: '>=2.8.3'
+  pg-connection-string@<=2.13.0: 2.13.0
