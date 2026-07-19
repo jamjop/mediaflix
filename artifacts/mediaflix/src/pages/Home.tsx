@@ -199,6 +199,31 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Live Dashboard */}
+        <section className="max-w-6xl mx-auto px-4 py-8">
+          <h2 className="text-center text-2xl font-bold text-white/90 mb-6">Live Dashboard</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ErrorBoundary label="NowWatching">
+              <NowWatchingCard activity={activity} tautulliUrl={tautulliUrl} />
+            </ErrorBoundary>
+            <ErrorBoundary label="Downloads">
+              <DownloadsCard downloads={downloads} sabnzbdUrl={sabnzbdUrl} qbittorrentUrl={qbittorrentUrl} />
+            </ErrorBoundary>
+            <ErrorBoundary label="RecentRequests">
+              <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
+            </ErrorBoundary>
+            <ErrorBoundary label="DiskUsage">
+              <DiskUsageCard diskSpace={diskSpace} />
+            </ErrorBoundary>
+          </div>
+
+          <div className="flex justify-center mt-6">
+            <ErrorBoundary label="ServiceHealth">
+              <ServiceHealthBar health={serviceStatus} />
+            </ErrorBoundary>
+          </div>
+        </section>
+
         {/* Quick Access */}
         {(isLoading || SERVICE_ORDER.length > 0) && (
           <section className="px-4 py-8">
@@ -235,31 +260,6 @@ export default function Home() {
             </div>
           </section>
         )}
-
-        {/* Live Dashboard */}
-        <section className="max-w-6xl mx-auto px-4 py-8">
-          <h2 className="text-center text-2xl font-bold text-white/90 mb-6">Live Dashboard</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ErrorBoundary label="NowWatching">
-              <NowWatchingCard activity={activity} tautulliUrl={tautulliUrl} />
-            </ErrorBoundary>
-            <ErrorBoundary label="Downloads">
-              <DownloadsCard downloads={downloads} sabnzbdUrl={sabnzbdUrl} qbittorrentUrl={qbittorrentUrl} />
-            </ErrorBoundary>
-            <ErrorBoundary label="RecentRequests">
-              <RecentRequestsCard requestsData={requestsData} overseerrUrl={overseerrLinkUrl} />
-            </ErrorBoundary>
-            <ErrorBoundary label="DiskUsage">
-              <DiskUsageCard diskSpace={diskSpace} />
-            </ErrorBoundary>
-          </div>
-
-          <div className="flex justify-center mt-6">
-            <ErrorBoundary label="ServiceHealth">
-              <ServiceHealthBar health={serviceStatus} />
-            </ErrorBoundary>
-          </div>
-        </section>
 
         {/* Footer */}
         <footer className="text-center pb-8 text-white/20 text-xs">
